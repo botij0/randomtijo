@@ -1,0 +1,18 @@
+.banner {
+  min-height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 2px solid var(--gold);
+  background:
+    linear-gradient(90deg, #2a1038, #1a0828 40%, #2a1038);
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.4vw, 1.45rem);
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 16px color-mix(in srgb, var(--gold) 70%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--magenta) 30%, transparent);
+}

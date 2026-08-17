@@ -1,0 +1,48 @@
+.fieldset {
+  border: 2px solid color-mix(in srgb, var(--magenta) 55%, transparent);
+  border-radius: 1rem;
+  padding: 0.75rem 0.9rem 0.95rem;
+  margin: 0;
+  background: color-mix(in srgb, #1c0d36 80%, transparent);
+}
+
+.legend {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--magenta);
+  padding: 0 0.4rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: #12081f;
+  color: var(--cream);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.choice[data-active='true'] {
+  background: color-mix(in srgb, var(--cyan) 22%, #12081f);
+  box-shadow: 0 0 0 2px var(--cyan);
+}
+
+.choice input {
+  accent-color: var(--gold);
+}
+
+.fieldset:disabled .choice {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

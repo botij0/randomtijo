@@ -1,0 +1,48 @@
+:root {
+  --bg: #0b0618;
+  --surface: #1a1030;
+  --gold: #f4c430;
+  --magenta: #ff2bd6;
+  --cyan: #2bfff2;
+  --cream: #fff6e0;
+  --font-display: 'Bungee', 'Trebuchet MS', sans-serif;
+  --font-ui: 'Nunito', 'Segoe UI', system-ui, sans-serif;
+  color: var(--cream);
+  font-family: var(--font-ui);
+  background:
+    radial-gradient(circle at top, #3a1458 0%, var(--bg) 42%),
+    var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

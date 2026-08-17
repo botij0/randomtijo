@@ -1,0 +1,42 @@
+.stage {
+  width: min(100%, 26rem);
+  margin: 0 auto;
+}
+
+.board {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--cyan) 40%, transparent));
+}
+
+.ghostPath {
+  fill: none;
+  stroke: color-mix(in srgb, var(--cyan) 35%, transparent);
+  stroke-width: 3;
+  stroke-dasharray: 6 8;
+}
+
+.slotLabel {
+  fill: var(--cream);
+  font-size: 11px;
+  font-weight: 800;
+  font-family: var(--font-ui);
+}
+
+.ball {
+  fill: #fff6e0;
+  stroke: #ff2bd6;
+  stroke-width: 3;
+  offset-path: path('M 200 28 L 200 448');
+  offset-distance: 0%;
+  animation-name: travel;
+  animation-timing-function: cubic-bezier(0.2, 0.15, 0.15, 1);
+  animation-fill-mode: forwards;
+  filter: drop-shadow(0 0 8px #fff);
+}
+
+@keyframes travel {
+  to {
+    offset-distance: 100%;
+  }
+}

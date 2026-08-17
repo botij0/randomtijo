@@ -1,0 +1,73 @@
+# openspec/config.yaml
+schema: spec-driven
+project: randomtijo
+artifact_store: hybrid
+delivery_strategy: ask-on-risk
+strict_tdd: true
+context: |
+  Vite + React + TypeScript SPA (randomtijo). Vitest + Testing Library + jsdom.
+  CSS modules. No Tailwind, Framer Motion, Matter.js, Next.js, or router.
+  Result-first picker: pickIndex then theater. Modes must not call pickIndex.
+  Persistence: hybrid (OpenSpec files + Engram observations).
+  Delivery strategy: ask-on-risk (this change accepted size:exception).
+
+testing:
+  strict_tdd: true
+  strict_tdd_reason: Vitest is scaffolded; honor RED-then-GREEN for remaining apply tasks.
+  intended_future:
+    ui: React
+    unit_runner: Vitest
+    integration: Testing Library
+    note: Runner is now on disk.
+  runner:
+    command: npm test
+    framework: vitest
+  layers:
+    unit:
+      available: true
+      tool: vitest
+    integration:
+      available: true
+      tool: testing-library
+    e2e:
+      available: false
+      tool: none
+  coverage:
+    available: false
+    command: ""
+  quality:
+    linter:
+      available: false
+      command: ""
+    type_checker:
+      available: true
+      command: npx tsc -b
+    formatter:
+      available: false
+      command: ""
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include mermaid diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    guidelines:
+      - Follow existing code patterns
+      - CSS modules only; no Tailwind, Framer Motion, or physics engines
+      - Modes animate to a preselected winnerId and MUST NOT call pickIndex
+    tdd: true
+    test_command: npm test
+  verify:
+    test_command: npm test
+    build_command: npm run build
+    coverage_threshold: 0
+  archive:
+    - Confirm before merging destructive deltas

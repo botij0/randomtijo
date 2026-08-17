@@ -1,0 +1,11 @@
+# Local AI runtime state
+.atl/
+
+# Dependencies and build
+node_modules/
+dist/
+*.local
+
+# TypeScript incremental
+*.tsbuildinfo
+node_modules/.tmp/
