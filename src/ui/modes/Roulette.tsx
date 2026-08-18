@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Option, SpinPhase } from '../../domain/types'
-import { SLICE_COLORS, THEATER_MS } from './theater'
+import { ROULETTE_TURNS, SLICE_COLORS, THEATER_MS } from './theater'
 import styles from './Roulette.module.css'
 
 type RouletteProps = {
@@ -26,28 +26,34 @@ function labelPoint(index: number, count: number, radius = 62, cx = 100, cy = 10
   return { x: cx + radius * Math.cos(mid), y: cy + radius * Math.sin(mid) }
 }
 
-export function targetRotation(winnerIndex: number, count: number, extraTurns = 5): number {
+export function targetRotation(currentDeg: number, winnerIndex: number, count: number): number {
   const slice = 360 / count
   const winnerCenter = (winnerIndex + 0.5) * slice
-  return extraTurns * 360 + (360 - winnerCenter)
+  const turnsBase = Math.ceil(currentDeg / 360) * 360
+  return turnsBase + ROULETTE_TURNS * 360 + (360 - winnerCenter)
 }
 
 export default function Roulette({ options, winnerId, phase, onComplete }: RouletteProps) {
   const finished = useRef(false)
   const onCompleteRef = useRef(onComplete)
   onCompleteRef.current = onComplete
+  const rotationRef = useRef(0)
+  const [angle, setAngle] = useState(0)
   const winnerIndex = Math.max(0, options.findIndex((option) => option.id === winnerId))
   const spinning = phase === 'spinning' && winnerId !== null
-  const angle = useMemo(() => {
-    if (!winnerId || options.length === 0) {
-      return 0
-    }
-    return targetRotation(winnerIndex, options.length)
-  }, [options.length, winnerId, winnerIndex])
 
   useEffect(() => {
     finished.current = false
   }, [winnerId, phase])
+
+  useEffect(() => {
+    if (!spinning || options.length === 0) {
+      return
+    }
+    const next = targetRotation(rotationRef.current, winnerIndex, options.length)
+    rotationRef.current = next
+    setAngle(next)
+  }, [spinning, winnerId, options.length, winnerIndex])
 
   useEffect(() => {
     if (!spinning) {
@@ -58,7 +64,7 @@ export default function Roulette({ options, winnerId, phase, onComplete }: Roule
         finished.current = true
         onCompleteRef.current()
       }
-    }, THEATER_MS)
+    }, THEATER_MS.roulette)
     return () => window.clearTimeout(timer)
   }, [spinning, winnerId])
 
@@ -74,7 +80,7 @@ export default function Roulette({ options, winnerId, phase, onComplete }: Roule
         data-testid="roulette-wheel"
         style={{
           transform: `rotate(${spinning || phase === 'revealed' ? angle : 0}deg)`,
-          transitionDuration: spinning ? `${THEATER_MS}ms` : '0ms',
+          transitionDuration: spinning ? `${THEATER_MS.roulette}ms` : '0ms',
         }}
       >
         <svg viewBox="0 0 200 200" role="img" aria-label="Roulette wheel">

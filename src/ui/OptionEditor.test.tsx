@@ -1,5 +1,5 @@
 import { useReducer } from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import OptionEditor from './OptionEditor'
 import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from '../state/pickerReducer'
@@ -117,5 +117,97 @@ describe('OptionEditor', () => {
     expect(screen.getByRole('button', { name: 'Add option' })).toBeDisabled()
     await user.click(screen.getByRole('button', { name: 'Add option' }))
     expect(screen.getByTestId('count')).toHaveTextContent('12')
+  })
+
+  it('shows per-index placeholder suggestions', () => {
+    render(
+      <EditorHarness
+        initial={createInitialState({
+          options: [
+            { id: 'a', label: 'Alpha' },
+            { id: 'b', label: 'Beta' },
+            { id: 'c', label: 'Gamma' },
+          ],
+        })}
+      />,
+    )
+
+    expect(screen.getByLabelText('Option 1 label')).toHaveAttribute('placeholder', 'e.g. Restaurant A')
+    expect(screen.getByLabelText('Option 3 label')).toHaveAttribute('placeholder', 'e.g. Restaurant C')
+  })
+
+  it('adds an option when Enter is pressed on a non-blank label', async () => {
+    const user = userEvent.setup()
+    render(
+      <EditorHarness
+        initial={createInitialState({
+          options: [
+            { id: 'a', label: 'Alpha' },
+            { id: 'b', label: 'Beta' },
+            { id: 'c', label: 'Gamma' },
+          ],
+        })}
+      />,
+    )
+
+    await user.click(screen.getByLabelText('Option 2 label'))
+    await user.keyboard('{Enter}')
+
+    expect(screen.getByTestId('count')).toHaveTextContent('4')
+  })
+
+  it('ignores Enter at the 12-option cap', async () => {
+    const user = userEvent.setup()
+    const twelve = Array.from({ length: 12 }, (_, index) => ({
+      id: `o-${index}`,
+      label: `Item ${index}`,
+    }))
+    render(<EditorHarness initial={createInitialState({ options: twelve })} />)
+
+    await user.click(screen.getByLabelText('Option 1 label'))
+    await user.keyboard('{Enter}')
+
+    expect(screen.getByTestId('count')).toHaveTextContent('12')
+  })
+
+  it('ignores Enter on a whitespace-only label', async () => {
+    const user = userEvent.setup()
+    render(
+      <EditorHarness
+        initial={createInitialState({
+          options: [
+            { id: 'a', label: 'Alpha' },
+            { id: 'b', label: '   ' },
+          ],
+        })}
+      />,
+    )
+
+    await user.click(screen.getByLabelText('Option 2 label'))
+    await user.keyboard('{Enter}')
+
+    expect(screen.getByTestId('count')).toHaveTextContent('2')
+  })
+
+  it('ignores Enter while spinning', () => {
+    render(
+      <EditorHarness
+        initial={createInitialState({
+          options: [
+            { id: 'a', label: 'Alpha' },
+            { id: 'b', label: 'Beta' },
+            { id: 'c', label: 'Gamma' },
+          ],
+          phase: 'spinning',
+          winnerId: 'a',
+        })}
+      />,
+    )
+
+    const first = screen.getByLabelText('Option 1 label')
+    expect(first).toBeDisabled()
+    fireEvent.keyDown(first, { key: 'Enter' })
+
+    expect(screen.getByTestId('count')).toHaveTextContent('3')
   })
 })

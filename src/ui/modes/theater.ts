@@ -1,4 +1,14 @@
-export const THEATER_MS = 2400
+import type { Mode } from '../../domain/types'
+
+export const THEATER_MS: Record<Mode, number> = {
+  roulette: 4000,
+  plinko: 3000,
+  slots: 3000,
+}
+
+export const ROULETTE_TURNS = 5
+
+export const SLOT_LOOPS = 3
 
 export const SLICE_COLORS = [
   '#ff2bd6',

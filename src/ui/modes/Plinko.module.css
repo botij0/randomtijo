@@ -9,18 +9,39 @@
   filter: drop-shadow(0 0 18px color-mix(in srgb, var(--cyan) 40%, transparent));
 }
 
-.ghostPath {
-  fill: none;
-  stroke: color-mix(in srgb, var(--cyan) 35%, transparent);
-  stroke-width: 3;
-  stroke-dasharray: 6 8;
-}
-
 .slotLabel {
   fill: var(--cream);
   font-size: 11px;
   font-weight: 800;
   font-family: var(--font-ui);
+}
+
+.pegHit {
+  animation: pegFlash 420ms ease-out;
+}
+
+@keyframes pegFlash {
+  0%,
+  100% {
+    filter: none;
+  }
+  40% {
+    filter: brightness(2.4) drop-shadow(0 0 6px #fff);
+  }
+}
+
+.slotWin {
+  animation: slotPulse 700ms ease-in-out infinite;
+}
+
+@keyframes slotPulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.6) drop-shadow(0 0 10px var(--cyan));
+  }
 }
 
 .ball {
@@ -38,5 +59,13 @@
 @keyframes travel {
   to {
     offset-distance: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pegHit,
+  .slotWin,
+  .ball {
+    animation: none;
   }
 }

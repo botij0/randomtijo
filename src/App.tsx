@@ -120,6 +120,8 @@ export default function App() {
             className={styles.spin}
             disabled={!canSpin(state)}
             onClick={handleSpin}
+            data-spinning={spinning}
+            aria-busy={spinning}
           >
             {spinning ? 'Spinning…' : 'Spin!'}
           </button>

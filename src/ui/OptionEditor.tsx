@@ -1,3 +1,4 @@
+import { isValidLabel } from '../domain/options'
 import type { Option } from '../domain/types'
 import styles from './OptionEditor.module.css'
 
@@ -36,8 +37,15 @@ export default function OptionEditor({
                 className={styles.input}
                 value={option.label}
                 disabled={disabled}
+                placeholder={`e.g. Restaurant ${String.fromCharCode(65 + index)}`}
                 aria-label={`Option ${n} label`}
                 onChange={(event) => onChange(option.id, event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && canAdd && !disabled && isValidLabel(option.label)) {
+                    event.preventDefault()
+                    onAdd()
+                  }
+                }}
               />
               <button
                 type="button"

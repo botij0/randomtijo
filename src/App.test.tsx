@@ -85,6 +85,9 @@ describe('App', () => {
 
     expect(screen.getByLabelText('Option 1 label')).toHaveValue('Cafe Luna')
     await user.click(screen.getByRole('button', { name: 'Spin!' }))
-    expect(screen.getByRole('button', { name: 'Spinning…' })).toBeDisabled()
+    const spinningButton = screen.getByRole('button', { name: 'Spinning…' })
+    expect(spinningButton).toBeDisabled()
+    expect(spinningButton).toHaveAttribute('data-spinning', 'true')
+    expect(spinningButton).toHaveAttribute('aria-busy', 'true')
   })
 })
