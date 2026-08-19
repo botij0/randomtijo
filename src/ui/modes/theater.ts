@@ -3,7 +3,10 @@ import type { Mode } from '../../domain/types'
 export const THEATER_MS: Record<Mode, number> = {
   roulette: 4000,
   slots: 3000,
+  'horse-race': 4000,
 }
+
+export const HORSE_RACE_STAGGER_MS = 280
 
 export const ROULETTE_TURNS = 5
 

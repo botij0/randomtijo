@@ -29,6 +29,15 @@ describe('ModePicker', () => {
     expect(screen.getByRole('radio', { name: 'Slots' })).toBeChecked()
   })
 
+  it('switches to horse race while idle', async () => {
+    const user = userEvent.setup()
+    render(<ModeHarness initial={createInitialState({ phase: 'idle', mode: 'roulette' })} />)
+
+    await user.click(screen.getByRole('radio', { name: 'Horse race' }))
+    expect(screen.getByTestId('mode')).toHaveTextContent('horse-race')
+    expect(screen.getByRole('radio', { name: 'Horse race' })).toBeChecked()
+  })
+
   it('rejects switching to slots while roulette is spinning', async () => {
     const user = userEvent.setup()
     render(
@@ -44,6 +53,25 @@ describe('ModePicker', () => {
     const slots = screen.getByRole('radio', { name: 'Slots' })
     expect(slots).toBeDisabled()
     await user.click(slots)
+    expect(screen.getByTestId('mode')).toHaveTextContent('roulette')
+    expect(screen.getByRole('radio', { name: 'Roulette' })).toBeChecked()
+  })
+
+  it('rejects switching to horse race while roulette is spinning', async () => {
+    const user = userEvent.setup()
+    render(
+      <ModeHarness
+        initial={createInitialState({
+          phase: 'spinning',
+          mode: 'roulette',
+          winnerId: 'opt-1',
+        })}
+      />,
+    )
+
+    const horseRace = screen.getByRole('radio', { name: 'Horse race' })
+    expect(horseRace).toBeDisabled()
+    await user.click(horseRace)
     expect(screen.getByTestId('mode')).toHaveTextContent('roulette')
     expect(screen.getByRole('radio', { name: 'Roulette' })).toBeChecked()
   })

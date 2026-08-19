@@ -33,6 +33,17 @@ describe('App', () => {
     vi.mocked(pickIndex).mockReturnValue(0)
   })
 
+  it('shows the horse race track when that mode is chosen', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('radio', { name: 'Horse race' }))
+
+    expect(screen.getByTestId('horse-race')).toBeInTheDocument()
+    expect(screen.getByTestId('horse-race')).toHaveAttribute('data-winner-id', '')
+    expect(screen.getByText('Cafe Luna')).toBeInTheDocument()
+  })
+
   it('skips theater under reduced motion and still reveals the winner', async () => {
     stubMatchMedia(true)
     const user = userEvent.setup()

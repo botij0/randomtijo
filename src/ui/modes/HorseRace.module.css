@@ -1,0 +1,129 @@
+.stage {
+  width: min(100%, 34rem);
+  margin: 0 auto;
+}
+
+.board {
+  padding: 0.65rem 0.6rem 0.8rem;
+  border-radius: 1.15rem;
+  background:
+    linear-gradient(180deg, #3d8f3a 0%, #1f5a22 55%, #163f18 100%);
+  box-shadow:
+    0 0 0 4px #1a0b08,
+    0 0 24px color-mix(in srgb, var(--gold) 40%, transparent);
+}
+
+.banner {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.45rem 0.45rem;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-shadow: 0 1px 0 #0a1a08;
+}
+
+.track {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0.3rem 0 0.35rem;
+  border-radius: 0.55rem;
+  border: 3px solid #f4e7c5;
+  background: #9a6230;
+  box-shadow: inset 0 0 18px #0006;
+  overflow: hidden;
+}
+
+.finish {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 6.85rem;
+  width: 10px;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg,
+    #fff6e0 0 7px,
+    #1a0b08 7px 14px
+  );
+  opacity: 0.92;
+}
+
+.lane {
+  position: relative;
+  height: 2.05rem;
+  background: repeating-linear-gradient(
+    90deg,
+    #c48a3a 0 16px,
+    #b57a2e 16px 32px
+  );
+}
+
+.lane + .lane {
+  box-shadow: inset 0 2px 0 color-mix(in srgb, #fff 28%, transparent);
+}
+
+.horse {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  max-width: 7.4rem;
+  transform: translateY(-50%);
+  transition-property: left;
+  transition-timing-function: cubic-bezier(0.12, 0.55, 0.28, 1);
+}
+
+.sprite {
+  font-size: 1.28rem;
+  line-height: 1;
+  transform: scaleX(-1);
+  filter: drop-shadow(0 1px 0 #0007);
+}
+
+.horse[data-running='true'] .sprite {
+  animation: gallop 0.28s ease-in-out infinite;
+}
+
+.label {
+  overflow: hidden;
+  max-width: 5.3rem;
+  padding: 0.12rem 0.38rem;
+  border-radius: 999px;
+  background: var(--saddle, var(--gold));
+  color: #140614;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.horse[data-winner='true'] .label {
+  box-shadow:
+    0 0 0 2px #fff6e0,
+    0 0 12px var(--gold);
+}
+
+@keyframes gallop {
+  0%,
+  100% {
+    transform: scaleX(-1) translateY(0);
+  }
+  50% {
+    transform: scaleX(-1) translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .horse[data-running='true'] .sprite {
+    animation: none;
+  }
+}

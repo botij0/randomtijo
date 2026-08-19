@@ -1,10 +1,6 @@
-# Picker Modes Specification
+# Delta for picker-modes
 
-## Purpose
-
-Theatrical winner display.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Choose mode before spin
 
@@ -45,13 +41,3 @@ Horse race MUST place each option in its own lane as a labeled horse. The winnin
 - GIVEN a completed horse race
 - WHEN another race runs
 - THEN horses reset to the start and the preselected winner arrives first again
-
-### Requirement: Result shown as text
-
-Winning label MUST appear as text. Color or canvas alone MUST NOT be the only result.
-
-#### Scenario: Text result
-
-- GIVEN revealed winner "Cafe Luna"
-- WHEN the result is displayed
-- THEN text includes Cafe Luna without relying on animation

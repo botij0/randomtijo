@@ -4,6 +4,7 @@ import styles from './ModePicker.module.css'
 const MODES: { value: Mode; label: string }[] = [
   { value: 'roulette', label: 'Roulette' },
   { value: 'slots', label: 'Slots' },
+  { value: 'horse-race', label: 'Horse race' },
 ]
 
 type ModePickerProps = {

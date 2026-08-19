@@ -51,6 +51,20 @@ describe('localStore', () => {
     expect(loadPicker(storage)?.mode).toBe('slots')
   })
 
+  it('restores horse-race as a valid mode', () => {
+    const storage = memoryStore({
+      [STORAGE_KEY]: JSON.stringify({
+        options: sample.options,
+        mode: 'horse-race',
+      }),
+    })
+
+    expect(loadPicker(storage)).toEqual({
+      options: sample.options,
+      mode: 'horse-race',
+    })
+  })
+
   it('does not restore a retired plinko mode', () => {
     const storage = memoryStore({
       [STORAGE_KEY]: JSON.stringify({
