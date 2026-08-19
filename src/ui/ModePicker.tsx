@@ -3,7 +3,6 @@ import styles from './ModePicker.module.css'
 
 const MODES: { value: Mode; label: string }[] = [
   { value: 'roulette', label: 'Roulette' },
-  { value: 'plinko', label: 'Plinko' },
   { value: 'slots', label: 'Slots' },
 ]
 

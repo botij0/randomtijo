@@ -5,7 +5,6 @@ import { loadPicker, savePicker } from './persistence/localStore'
 import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from './state/pickerReducer'
 import ModePicker from './ui/ModePicker'
 import OptionEditor from './ui/OptionEditor'
-import Plinko from './ui/modes/Plinko'
 import Roulette from './ui/modes/Roulette'
 import Slots from './ui/modes/Slots'
 import ResultBanner from './ui/ResultBanner'
@@ -92,14 +91,6 @@ export default function App() {
           <div className={styles.theater}>
             {state.mode === 'roulette' ? (
               <Roulette
-                options={playable}
-                winnerId={state.winnerId}
-                phase={state.phase}
-                onComplete={() => dispatch({ type: 'COMPLETE_SPIN' })}
-              />
-            ) : null}
-            {state.mode === 'plinko' ? (
-              <Plinko
                 options={playable}
                 winnerId={state.winnerId}
                 phase={state.phase}

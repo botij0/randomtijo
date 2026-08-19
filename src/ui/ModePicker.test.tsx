@@ -20,13 +20,13 @@ function ModeHarness({ initial }: { initial: PickerState }) {
 }
 
 describe('ModePicker', () => {
-  it('switches to plinko while idle', async () => {
+  it('switches to slots while idle', async () => {
     const user = userEvent.setup()
     render(<ModeHarness initial={createInitialState({ phase: 'idle', mode: 'roulette' })} />)
 
-    await user.click(screen.getByRole('radio', { name: 'Plinko' }))
-    expect(screen.getByTestId('mode')).toHaveTextContent('plinko')
-    expect(screen.getByRole('radio', { name: 'Plinko' })).toBeChecked()
+    await user.click(screen.getByRole('radio', { name: 'Slots' }))
+    expect(screen.getByTestId('mode')).toHaveTextContent('slots')
+    expect(screen.getByRole('radio', { name: 'Slots' })).toBeChecked()
   })
 
   it('rejects switching to slots while roulette is spinning', async () => {

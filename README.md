@@ -1,6 +1,6 @@
 # randomtijo
 
-Fair, theatrical table-side picker. Enter 2–12 options, choose roulette, plinko, or slots, then spin. The winner is picked once, then the animation plays toward that result.
+Fair, theatrical table-side picker. Enter 2–12 options, choose roulette or slots, then spin. The winner is picked once, then the animation plays toward that result.
 
 ## Run
 

@@ -51,6 +51,17 @@ describe('localStore', () => {
     expect(loadPicker(storage)?.mode).toBe('slots')
   })
 
+  it('does not restore a retired plinko mode', () => {
+    const storage = memoryStore({
+      [STORAGE_KEY]: JSON.stringify({
+        options: sample.options,
+        mode: 'plinko',
+      }),
+    })
+
+    expect(loadPicker(storage)).toBeNull()
+  })
+
   it('fails open when storage throws', () => {
     const throwing: StorageLike = {
       getItem() {

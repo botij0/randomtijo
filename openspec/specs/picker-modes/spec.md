@@ -8,13 +8,13 @@ Theatrical winner display.
 
 ### Requirement: Choose mode before spin
 
-MUST allow roulette, plinko, or slots before spinning. Mode MUST NOT change while spinning.
+MUST allow roulette or slots before spinning. Mode MUST NOT change while spinning.
 
 #### Scenario: Choose mode
 
 - GIVEN idle
-- WHEN plinko is chosen
-- THEN active mode is plinko
+- WHEN slots is chosen
+- THEN active mode is slots
 
 #### Scenario: Mode locked
 
@@ -29,7 +29,7 @@ Each mode MUST visually resolve to the already-selected winner. MUST NOT run a s
 #### Scenario: Modes show winner
 
 - GIVEN a selected winner
-- WHEN roulette, plinko, or slots presentation completes
+- WHEN roulette or slots presentation completes
 - THEN it shows that winner with no second pick
 
 ### Requirement: Result shown as text

@@ -9,7 +9,7 @@ export type PersistedPicker = {
 
 export type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
-const MODES: readonly Mode[] = ['roulette', 'plinko', 'slots']
+const MODES: readonly Mode[] = ['roulette', 'slots']
 
 function isMode(value: unknown): value is Mode {
   return typeof value === 'string' && (MODES as readonly string[]).includes(value)
