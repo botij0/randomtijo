@@ -33,6 +33,16 @@ describe('App', () => {
     vi.mocked(pickIndex).mockReturnValue(0)
   })
 
+  it('keeps picker mode above the option list', () => {
+    render(<App />)
+
+    const mode = screen.getByRole('radiogroup', { name: 'Picker mode' })
+    const options = screen.getByRole('heading', { name: 'Options' })
+    expect(mode.compareDocumentPosition(options) & Node.DOCUMENT_POSITION_FOLLOWING).toBeGreaterThan(
+      0,
+    )
+  })
+
   it('shows the horse race track when that mode is chosen', async () => {
     const user = userEvent.setup()
     render(<App />)

@@ -74,6 +74,11 @@ export default function App() {
       </header>
       <div className={styles.layout}>
         <aside className={styles.sidebar}>
+          <ModePicker
+            mode={state.mode}
+            disabled={spinning}
+            onChange={(mode) => dispatch({ type: 'SET_MODE', mode })}
+          />
           <OptionEditor
             options={state.options}
             disabled={spinning}
@@ -81,11 +86,6 @@ export default function App() {
             onAdd={() => dispatch({ type: 'ADD_OPTION', id: crypto.randomUUID() })}
             onChange={(id, label) => dispatch({ type: 'UPDATE_OPTION', id, label })}
             onRemove={(id) => dispatch({ type: 'REMOVE_OPTION', id })}
-          />
-          <ModePicker
-            mode={state.mode}
-            disabled={spinning}
-            onChange={(mode) => dispatch({ type: 'SET_MODE', mode })}
           />
         </aside>
         <main className={styles.stage}>

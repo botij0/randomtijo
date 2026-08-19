@@ -2,10 +2,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
 .heading {
   margin: 0;
+  flex-shrink: 0;
   font-family: var(--font-display);
   font-size: 1.15rem;
   letter-spacing: 0.08em;
@@ -16,10 +19,16 @@
 .list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 0.15rem 0 0;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+  min-height: 0;
+  flex: 1 1 auto;
+  max-height: min(22rem, 50vh);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--gold) #140a28;
 }
 
 .row {
@@ -78,6 +87,7 @@
 
 .add {
   align-self: start;
+  flex-shrink: 0;
   background: linear-gradient(180deg, #ffe27a, var(--gold));
   color: #2a1600;
   box-shadow: 0 0 16px color-mix(in srgb, var(--gold) 50%, transparent);
