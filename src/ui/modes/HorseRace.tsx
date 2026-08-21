@@ -12,8 +12,8 @@ type HorseRaceProps = {
 
 export const HORSE_RACE_RESET_MS = 40
 
-const GATE_LEFT = '0.35rem'
-const FINISH_LEFT = 'calc(100% - 7.5rem)'
+export const GATE_LEFT = '0.35rem'
+export const WINNER_FINISH_LEFT = 'calc(100% - 7.5rem)'
 
 export function horseDurationMs(
   optionId: string,
@@ -27,6 +27,19 @@ export function horseDurationMs(
   }
   const loserRank = optionIndex < winnerIndex ? optionIndex : optionIndex - 1
   return winnerMs + HORSE_RACE_STAGGER_MS * (loserRank + 1)
+}
+
+export function horseTravelLeft(
+  optionId: string,
+  winnerId: string,
+  optionIndex: number,
+  winnerIndex: number,
+): string {
+  if (optionId === winnerId) {
+    return WINNER_FINISH_LEFT
+  }
+  const loserRank = optionIndex < winnerIndex ? optionIndex : optionIndex - 1
+  return `calc(100% - ${10.4 + loserRank * 0.7}rem)`
 }
 
 export default function HorseRace({ options, winnerId, phase, onComplete }: HorseRaceProps) {
@@ -93,18 +106,22 @@ export default function HorseRace({ options, winnerId, phase, onComplete }: Hors
               ? horseDurationMs(option.id, winnerId, index, winnerIndex)
               : 0
             return (
-              <div key={option.id} className={styles.lane}>
+              <div key={option.id} className={styles.lane} data-won={phase === 'revealed' && isWinner}>
                 <div
                   className={styles.horse}
                   data-testid={`horse-${option.id}`}
                   data-running={atFinish}
                   data-winner={phase === 'revealed' && isWinner}
+                  data-behind={phase === 'revealed' && Boolean(winnerId) && !isWinner}
                   style={{
-                    left: atFinish ? FINISH_LEFT : GATE_LEFT,
+                    left: atFinish ? horseTravelLeft(option.id, winnerId ?? '', index, winnerIndex) : GATE_LEFT,
                     transitionDuration: atFinish && spinning ? `${duration}ms` : '0ms',
                     ['--saddle' as string]: SLICE_COLORS[index % SLICE_COLORS.length],
                   }}
                 >
+                  {phase === 'revealed' && isWinner ? (
+                    <span className={styles.ribbon}>Winner</span>
+                  ) : null}
                   <span className={styles.label}>{option.label}</span>
                   <span className={styles.sprite} aria-hidden="true">
                     🐎

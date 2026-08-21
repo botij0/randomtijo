@@ -34,7 +34,7 @@ sequenceDiagram
 | File | Action | Description |
 |------|--------|-------------|
 | `src/domain/types.ts` | Modify | `Mode` includes `'horse-race'` |
-| `src/ui/modes/theater.ts` | Modify | `THEATER_MS['horse-race'] = 4000` |
+| `src/ui/modes/theater.ts` | Modify | `THEATER_MS['horse-race'] = 6000` |
 | `src/ui/modes/HorseRace.tsx` | Create | Track, `horseDurationMs`, reset-then-run |
 | `src/ui/modes/HorseRace.module.css` | Create | Dirt track, lanes, finish line, gallop |
 | `src/ui/modes/HorseRace.test.tsx` | Create | No pickIndex; winner shortest duration; reset on repeat |
@@ -46,7 +46,7 @@ sequenceDiagram
 ## Interfaces / Contracts
 
 ```ts
-export const HORSE_RACE_STAGGER_MS = 280
+export const HORSE_RACE_STAGGER_MS = 420
 export const HORSE_RACE_RESET_MS = 40
 
 export function horseDurationMs(
