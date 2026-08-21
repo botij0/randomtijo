@@ -20,7 +20,7 @@ testing:
     integration: Testing Library
     note: Runner is now on disk.
   runner:
-    command: npm test
+    command: bun run test
     framework: vitest
   layers:
     unit:
@@ -41,7 +41,7 @@ testing:
       command: ""
     type_checker:
       available: true
-      command: npx tsc -b
+      command: bunx tsc -b
     formatter:
       available: false
       command: ""
@@ -64,10 +64,10 @@ rules:
       - CSS modules only; no Tailwind, Framer Motion, or physics engines
       - Modes animate to a preselected winnerId and MUST NOT call pickIndex
     tdd: true
-    test_command: npm test
+    test_command: bun run test
   verify:
-    test_command: npm test
-    build_command: npm run build
+    test_command: bun run test
+    build_command: bun run build
     coverage_threshold: 0
   archive:
     - Confirm before merging destructive deltas

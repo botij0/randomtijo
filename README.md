@@ -2,11 +2,13 @@
 
 Fair, theatrical table-side picker. Enter 2–12 options, choose roulette, slots, or horse race, then spin. The winner is picked once, then the animation plays toward that result.
 
+Requires [Bun](https://bun.sh).
+
 ## Run
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Open the local URL printed by Vite (usually `http://localhost:5173`).
@@ -14,11 +16,11 @@ Open the local URL printed by Vite (usually `http://localhost:5173`).
 ## Test
 
 ```bash
-npm test
+bun run test
 ```
 
 ## Build
 
 ```bash
-npm run build
+bun run build
 ```
