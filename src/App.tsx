@@ -5,6 +5,8 @@ import { loadPicker, savePicker } from './persistence/localStore'
 import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from './state/pickerReducer'
 import ModePicker from './ui/ModePicker'
 import OptionEditor from './ui/OptionEditor'
+import ClawMachine from './ui/modes/ClawMachine'
+import EliminationBoard from './ui/modes/EliminationBoard'
 import HorseRace from './ui/modes/HorseRace'
 import Roulette from './ui/modes/Roulette'
 import Slots from './ui/modes/Slots'
@@ -108,6 +110,22 @@ export default function App() {
             ) : null}
             {state.mode === 'horse-race' ? (
               <HorseRace
+                options={playable}
+                winnerId={state.winnerId}
+                phase={state.phase}
+                onComplete={() => dispatch({ type: 'COMPLETE_SPIN' })}
+              />
+            ) : null}
+            {state.mode === 'claw-machine' ? (
+              <ClawMachine
+                options={playable}
+                winnerId={state.winnerId}
+                phase={state.phase}
+                onComplete={() => dispatch({ type: 'COMPLETE_SPIN' })}
+              />
+            ) : null}
+            {state.mode === 'elimination-board' ? (
+              <EliminationBoard
                 options={playable}
                 winnerId={state.winnerId}
                 phase={state.phase}

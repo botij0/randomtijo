@@ -65,6 +65,34 @@ describe('localStore', () => {
     })
   })
 
+  it('restores claw-machine as a valid mode', () => {
+    const storage = memoryStore({
+      [STORAGE_KEY]: JSON.stringify({
+        options: sample.options,
+        mode: 'claw-machine',
+      }),
+    })
+
+    expect(loadPicker(storage)).toEqual({
+      options: sample.options,
+      mode: 'claw-machine',
+    })
+  })
+
+  it('restores elimination-board as a valid mode', () => {
+    const storage = memoryStore({
+      [STORAGE_KEY]: JSON.stringify({
+        options: sample.options,
+        mode: 'elimination-board',
+      }),
+    })
+
+    expect(loadPicker(storage)).toEqual({
+      options: sample.options,
+      mode: 'elimination-board',
+    })
+  })
+
   it('does not restore a retired plinko mode', () => {
     const storage = memoryStore({
       [STORAGE_KEY]: JSON.stringify({

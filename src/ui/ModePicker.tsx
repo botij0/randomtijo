@@ -5,6 +5,8 @@ const MODES: { value: Mode; label: string }[] = [
   { value: 'roulette', label: 'Roulette' },
   { value: 'slots', label: 'Slots' },
   { value: 'horse-race', label: 'Horse race' },
+  { value: 'claw-machine', label: 'Claw machine' },
+  { value: 'elimination-board', label: 'Elimination' },
 ]
 
 type ModePickerProps = {

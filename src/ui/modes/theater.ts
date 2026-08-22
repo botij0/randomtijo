@@ -1,9 +1,18 @@
 import type { Mode } from '../../domain/types'
 
+export const CLAW_AIM_MS = 1100
+export const CLAW_DROP_MS = 900
+export const CLAW_GRAB_MS = 250
+export const CLAW_LIFT_MS = 1750
+
+export const ELIMINATION_HOLD_MS = 800
+
 export const THEATER_MS: Record<Mode, number> = {
   roulette: 4000,
   slots: 3000,
   'horse-race': 6000,
+  'claw-machine': CLAW_AIM_MS + CLAW_DROP_MS + CLAW_GRAB_MS + CLAW_LIFT_MS,
+  'elimination-board': 5000,
 }
 
 export const HORSE_RACE_STAGGER_MS = 420

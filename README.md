@@ -1,6 +1,6 @@
 # randomtijo
 
-Fair, theatrical table-side picker. Enter 2–12 options, choose roulette, slots, or horse race, then spin. The winner is picked once, then the animation plays toward that result.
+Fair, theatrical table-side picker. Enter 2–12 options, choose roulette, slots, horse race, claw machine, or elimination, then spin. The winner is picked once, then the animation plays toward that result.
 
 Requires [Bun](https://bun.sh).
 

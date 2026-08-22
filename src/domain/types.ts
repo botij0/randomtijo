@@ -1,4 +1,4 @@
-export type Mode = 'roulette' | 'slots' | 'horse-race'
+export type Mode = 'roulette' | 'slots' | 'horse-race' | 'claw-machine' | 'elimination-board'
 
 export type SpinPhase = 'idle' | 'spinning' | 'revealed'
 

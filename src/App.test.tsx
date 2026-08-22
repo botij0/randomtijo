@@ -54,6 +54,28 @@ describe('App', () => {
     expect(screen.getByText('Cafe Luna')).toBeInTheDocument()
   })
 
+  it('shows the claw machine when that mode is chosen', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('radio', { name: 'Claw machine' }))
+
+    expect(screen.getByTestId('claw-machine')).toBeInTheDocument()
+    expect(screen.getByTestId('claw-machine')).toHaveAttribute('data-winner-id', '')
+    expect(screen.getByText('Cafe Luna')).toBeInTheDocument()
+  })
+
+  it('shows the elimination board when that mode is chosen', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+
+    await user.click(screen.getByRole('radio', { name: 'Elimination' }))
+
+    expect(screen.getByTestId('elimination-board')).toBeInTheDocument()
+    expect(screen.getByTestId('elimination-board')).toHaveAttribute('data-winner-id', '')
+    expect(screen.getByText('Cafe Luna')).toBeInTheDocument()
+  })
+
   it('skips theater under reduced motion and still reveals the winner', async () => {
     stubMatchMedia(true)
     const user = userEvent.setup()

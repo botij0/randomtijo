@@ -75,4 +75,60 @@ describe('ModePicker', () => {
     expect(screen.getByTestId('mode')).toHaveTextContent('roulette')
     expect(screen.getByRole('radio', { name: 'Roulette' })).toBeChecked()
   })
+
+  it('switches to claw machine while idle', async () => {
+    const user = userEvent.setup()
+    render(<ModeHarness initial={createInitialState({ phase: 'idle', mode: 'roulette' })} />)
+
+    await user.click(screen.getByRole('radio', { name: 'Claw machine' }))
+    expect(screen.getByTestId('mode')).toHaveTextContent('claw-machine')
+    expect(screen.getByRole('radio', { name: 'Claw machine' })).toBeChecked()
+  })
+
+  it('switches to elimination board while idle', async () => {
+    const user = userEvent.setup()
+    render(<ModeHarness initial={createInitialState({ phase: 'idle', mode: 'roulette' })} />)
+
+    await user.click(screen.getByRole('radio', { name: 'Elimination' }))
+    expect(screen.getByTestId('mode')).toHaveTextContent('elimination-board')
+    expect(screen.getByRole('radio', { name: 'Elimination' })).toBeChecked()
+  })
+
+  it('rejects switching to claw machine while roulette is spinning', async () => {
+    const user = userEvent.setup()
+    render(
+      <ModeHarness
+        initial={createInitialState({
+          phase: 'spinning',
+          mode: 'roulette',
+          winnerId: 'opt-1',
+        })}
+      />,
+    )
+
+    const claw = screen.getByRole('radio', { name: 'Claw machine' })
+    expect(claw).toBeDisabled()
+    await user.click(claw)
+    expect(screen.getByTestId('mode')).toHaveTextContent('roulette')
+    expect(screen.getByRole('radio', { name: 'Roulette' })).toBeChecked()
+  })
+
+  it('rejects switching to elimination board while roulette is spinning', async () => {
+    const user = userEvent.setup()
+    render(
+      <ModeHarness
+        initial={createInitialState({
+          phase: 'spinning',
+          mode: 'roulette',
+          winnerId: 'opt-1',
+        })}
+      />,
+    )
+
+    const board = screen.getByRole('radio', { name: 'Elimination' })
+    expect(board).toBeDisabled()
+    await user.click(board)
+    expect(screen.getByTestId('mode')).toHaveTextContent('roulette')
+    expect(screen.getByRole('radio', { name: 'Roulette' })).toBeChecked()
+  })
 })
