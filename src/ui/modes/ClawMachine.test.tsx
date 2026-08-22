@@ -1,5 +1,9 @@
 import { act, render, screen } from '@testing-library/react'
 import ClawMachine, {
+  CLAW_GAP_REM,
+  CLAW_GRAB_OFFSET_REM,
+  CLAW_PRIZE_REM,
+  CLAW_RAIL_REM,
   CLAW_REST_LEFT,
   CLAW_REST_TOP,
   CLAW_RESET_MS,
@@ -16,6 +20,7 @@ import {
   CLAW_LIFT_MS,
   CLAW_SWEEP_HOPS,
   CLAW_SWEEP_STEP_MS,
+  SLICE_COLORS,
   THEATER_MS,
 } from './theater'
 import { pickIndex } from '../../domain/pick'
@@ -51,11 +56,19 @@ describe('clawColumns', () => {
 })
 
 describe('clawAimLeft and clawDropTop', () => {
-  it('places each column and row at a distinct cell center', () => {
+  it('places each column at a distinct cell center and aims the grab at the prize', () => {
     expect(clawAimLeft(0, 3)).not.toBe(clawAimLeft(1, 3))
     expect(clawAimLeft(1, 3)).not.toBe(clawAimLeft(2, 3))
     expect(clawAimLeft(0, 3)).toBe(`${((0 + 0.5) / 3) * 100}%`)
-    expect(clawDropTop(0, 3)).toBe('50%')
+    expect(clawDropTop(0, 3)).toBe(
+      `${CLAW_RAIL_REM + CLAW_PRIZE_REM / 2 - CLAW_GRAB_OFFSET_REM}rem`,
+    )
+    expect(clawDropTop(0, 5)).toBe(
+      `${CLAW_RAIL_REM + CLAW_PRIZE_REM / 2 - CLAW_GRAB_OFFSET_REM}rem`,
+    )
+    expect(clawDropTop(4, 5)).toBe(
+      `${CLAW_RAIL_REM + CLAW_PRIZE_REM + CLAW_GAP_REM + CLAW_PRIZE_REM / 2 - CLAW_GRAB_OFFSET_REM}rem`,
+    )
     expect(clawDropTop(0, 5)).not.toBe(clawDropTop(4, 5))
   })
 })
@@ -143,7 +156,9 @@ describe('ClawMachine', () => {
     expect(clawEl()).toHaveAttribute('data-closed', 'true')
     expect(prizeEl('a')).toHaveAttribute('data-grabbed', 'true')
     expect(prizeEl('b')).toHaveAttribute('data-grabbed', 'false')
+    expect(clawEl()).toHaveTextContent('Winner')
     expect(clawEl()).toHaveTextContent('Alpha')
+    expect(clawEl().style.getPropertyValue('--capsule')).toBe(SLICE_COLORS[0])
 
     act(() => {
       vi.advanceTimersByTime(CLAW_GRAB_MS)

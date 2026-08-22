@@ -23,7 +23,14 @@ type ClawStep = 'rest' | 'sweep' | 'aim' | 'drop' | 'grab' | 'lift'
 
 export const CLAW_RESET_MS = 40
 export const CLAW_REST_LEFT = '50%'
-export const CLAW_REST_TOP = '12%'
+export const CLAW_REST_TOP = '0.2rem'
+
+/** Keep in sync with ClawMachine.module.css --rail, --prize, --gap. */
+export const CLAW_RAIL_REM = 2.55
+export const CLAW_PRIZE_REM = 4.35
+export const CLAW_GAP_REM = 0.5
+/** Distance from the claw top to the prong midpoint. */
+export const CLAW_GRAB_OFFSET_REM = 3.05
 
 export function clawColumns(count: number): number {
   return Math.min(4, Math.max(1, count))
@@ -37,9 +44,9 @@ export function clawAimLeft(index: number, count: number): string {
 
 export function clawDropTop(index: number, count: number): string {
   const cols = clawColumns(count)
-  const rows = Math.max(1, Math.ceil(count / cols))
   const row = Math.floor(index / cols)
-  return `${((row + 0.5) / rows) * 100}%`
+  const prizeCenter = CLAW_RAIL_REM + row * (CLAW_PRIZE_REM + CLAW_GAP_REM) + CLAW_PRIZE_REM / 2
+  return `${prizeCenter - CLAW_GRAB_OFFSET_REM}rem`
 }
 
 export function clawSweepCycle(count: number): number[] {
@@ -174,14 +181,20 @@ export default function ClawMachine({ options, winnerId, phase, onComplete }: Cl
               left,
               top,
               transitionDuration: spinning && displayStep !== 'rest' ? stepDuration(displayStep) : '0ms',
+              ['--capsule' as string]: SLICE_COLORS[winnerIndex % SLICE_COLORS.length],
             }}
           >
             <span className={styles.cable} aria-hidden="true" />
-            <span className={styles.head} aria-hidden="true">
-              <span className={styles.prong} data-side="left" />
-              <span className={styles.prong} data-side="right" />
+            <span className={styles.head}>
+              <span className={styles.prong} data-side="left" aria-hidden="true" />
+              <span className={styles.prong} data-side="right" aria-hidden="true" />
+              {holding && winner ? (
+                <span className={styles.held}>
+                  <span className={styles.ribbon}>Winner</span>
+                  <span className={styles.heldLabel}>{winner.label}</span>
+                </span>
+              ) : null}
             </span>
-            {holding && winner ? <span className={styles.held}>{winner.label}</span> : null}
           </div>
           <div className={styles.bin}>
             {options.map((option, index) => {
