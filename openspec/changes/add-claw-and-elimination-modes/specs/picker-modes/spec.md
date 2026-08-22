@@ -36,7 +36,7 @@ Each mode MUST visually resolve to the already-selected winner. MUST NOT run a s
 
 Claw machine MUST place each option in the cabinet as a labeled prize. The claw MUST aim at the winning prize, drop, grab it, and lift it. Every play MUST start from the rest pose and run forward, including plays after a previous grab.
 
-Elimination board MUST show each option as a labeled light. Losers MUST go dark one by one. The winning light MUST stay on. Every play MUST start with all lights on and eliminate forward, including plays after a previous finish.
+Elimination board MUST show each option as a labeled light. Losers MUST go dark one by one in a mixed order that does not follow the option list. A roaming highlight MAY visit remaining lights, including the winner. The winning light MUST stay on. Every play MUST start with all lights on and eliminate forward, including plays after a previous finish. MUST NOT call pickIndex.
 
 #### Scenario: Modes show winner
 
@@ -61,6 +61,12 @@ Elimination board MUST show each option as a labeled light. Losers MUST go dark 
 - GIVEN a selected winner and elimination board mode
 - WHEN the board runs
 - THEN other lights go dark and the winning light stays on, and no second pick runs
+
+#### Scenario: Elimination order is not the option list
+
+- GIVEN a selected winner and at least two losers
+- WHEN the board runs
+- THEN the first light to go dark is not always the first listed loser
 
 #### Scenario: Repeat elimination plays start fully lit
 

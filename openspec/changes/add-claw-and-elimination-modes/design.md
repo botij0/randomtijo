@@ -26,7 +26,7 @@ sequenceDiagram
 | 1 | Claw motion | Aim (X) → drop (Y) → grab → lift; durations in `theater.ts` | One CSS keyframe; rAF physics | Testable steps; no second pick; matches horse-race reset-then-run |
 | 2 | Claw geometry | `clawColumns` = `min(4, count)`; left/top from cell center helpers | Fixed 4-col grid; measuring DOM boxes | Deterministic strings for tests; works at 2 and 12 |
 | 3 | Grab presentation | Winner prize `data-grabbed`; claw holds the label while lifting | Physically moving the node | jsdom-friendly; label stays text |
-| 4 | Elimination order | Losers in option order, skip winner; times spread across `THEATER_MS - HOLD` | Random knockout order | Random order would be a second RNG |
+| 4 | Elimination order | Seeded shuffle of losers (`eliminationOrder`); roaming highlight over remaining lights | List order skipping the winner; `pickIndex` for order | Sequential skip leaks the winner; shuffle is theater, not a second pick |
 | 5 | Repeat spins | Instant reset (`0ms`), then arm after `*_RESET_MS` | Reverse animation; remount | Same lesson as horse race |
 
 ## File Changes
@@ -65,6 +65,7 @@ export function clawAimLeft(index: number, count: number): string
 export function clawDropTop(index: number, count: number): string
 
 export function eliminationAtMs(loserRank: number, loserCount: number): number
+export function eliminationOrder(optionIds: readonly string[], winnerId: string, playIndex: number): string[]
 ```
 
 Claw `onComplete` fires at `CLAW_RESET_MS + THEATER_MS['claw-machine']`.

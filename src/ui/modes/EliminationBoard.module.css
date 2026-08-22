@@ -50,6 +50,14 @@
   transition: opacity 280ms ease, filter 280ms ease, transform 280ms ease;
 }
 
+.light[data-hot='true'] {
+  border-color: #fff6e0;
+  transform: scale(1.04);
+  box-shadow:
+    0 0 0 2px #fff6e0,
+    0 0 16px var(--glow, var(--gold));
+}
+
 .light[data-eliminated='true'] {
   opacity: 0.22;
   filter: grayscale(0.85);

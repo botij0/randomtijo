@@ -2,6 +2,7 @@ import { act, render, screen } from '@testing-library/react'
 import EliminationBoard, {
   ELIMINATION_RESET_MS,
   eliminationAtMs,
+  eliminationOrder,
 } from './EliminationBoard'
 import { ELIMINATION_HOLD_MS, THEATER_MS } from './theater'
 import { pickIndex } from '../../domain/pick'
@@ -21,6 +22,21 @@ const options = [
 function lightEl(id: string): HTMLElement {
   return screen.getByTestId(`light-${id}`)
 }
+
+describe('eliminationOrder', () => {
+  const ids = options.map((option) => option.id)
+
+  it('is a permutation of losers and never includes the winner', () => {
+    const order = eliminationOrder(ids, 'b', 1)
+    expect(order).not.toContain('b')
+    expect([...order].sort()).toEqual(['a', 'c'])
+  })
+
+  it('does not walk losers in list order', () => {
+    expect(eliminationOrder(ids, 'b', 1)).not.toEqual(['a', 'c'])
+    expect(eliminationOrder(['a', 'b', 'c', 'd'], 'a', 1)).not.toEqual(['b', 'c', 'd'])
+  })
+})
 
 describe('eliminationAtMs', () => {
   it('spreads loser knockouts across the usable theater window', () => {
@@ -69,13 +85,19 @@ describe('EliminationBoard', () => {
     expect(lightEl('a')).toHaveAttribute('data-eliminated', 'false')
     expect(lightEl('b')).toHaveAttribute('data-eliminated', 'false')
 
+    const order = eliminationOrder(
+      options.map((option) => option.id),
+      'b',
+      1,
+    )
+
     act(() => {
       vi.advanceTimersByTime(eliminationAtMs(0, 2))
     })
 
-    expect(lightEl('a')).toHaveAttribute('data-eliminated', 'true')
+    expect(lightEl(order[0])).toHaveAttribute('data-eliminated', 'true')
+    expect(lightEl(order[1])).toHaveAttribute('data-eliminated', 'false')
     expect(lightEl('b')).toHaveAttribute('data-eliminated', 'false')
-    expect(lightEl('c')).toHaveAttribute('data-eliminated', 'false')
 
     act(() => {
       vi.advanceTimersByTime(eliminationAtMs(1, 2) - eliminationAtMs(0, 2))
