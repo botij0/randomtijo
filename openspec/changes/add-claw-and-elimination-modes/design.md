@@ -23,7 +23,7 @@ sequenceDiagram
 
 | # | Decision | Choice | Alternatives rejected | Rationale |
 |---|----------|--------|----------------------|-----------|
-| 1 | Claw motion | Aim (X) → drop (Y) → grab → lift; durations in `theater.ts` | One CSS keyframe; rAF physics | Testable steps; no second pick; matches horse-race reset-then-run |
+| 1 | Claw motion | Sweep the rail (`CLAW_SWEEP_HOPS` column hops) → aim winner → drop → grab → lift | Direct aim-then-drop; rAF physics | Direct aim leaked the winner and felt short; sweep stays CSS-only |
 | 2 | Claw geometry | `clawColumns` = `min(4, count)`; left/top from cell center helpers | Fixed 4-col grid; measuring DOM boxes | Deterministic strings for tests; works at 2 and 12 |
 | 3 | Grab presentation | Winner prize `data-grabbed`; claw holds the label while lifting | Physically moving the node | jsdom-friendly; label stays text |
 | 4 | Elimination order | Seeded shuffle of losers (`eliminationOrder`); roaming highlight over remaining lights | List order skipping the winner; `pickIndex` for order | Sequential skip leaks the winner; shuffle is theater, not a second pick |
@@ -50,11 +50,13 @@ sequenceDiagram
 
 ```ts
 export const CLAW_RESET_MS = 40
-export const CLAW_AIM_MS = 1100
-export const CLAW_DROP_MS = 900
-export const CLAW_GRAB_MS = 250
-export const CLAW_LIFT_MS = 1750
-// THEATER_MS['claw-machine'] = AIM+DROP+GRAB+LIFT = 4000
+export const CLAW_SWEEP_HOPS = 9
+export const CLAW_SWEEP_STEP_MS = 560
+export const CLAW_AIM_MS = 800
+export const CLAW_DROP_MS = 1500
+export const CLAW_GRAB_MS = 400
+export const CLAW_LIFT_MS = 1800
+// THEATER_MS['claw-machine'] = HOPS*STEP + AIM + DROP + GRAB + LIFT
 
 export const ELIMINATION_RESET_MS = 40
 export const ELIMINATION_HOLD_MS = 800
@@ -63,6 +65,7 @@ export const ELIMINATION_HOLD_MS = 800
 export function clawColumns(count: number): number
 export function clawAimLeft(index: number, count: number): string
 export function clawDropTop(index: number, count: number): string
+export function clawSweepLefts(count: number, hops?: number): string[]
 
 export function eliminationAtMs(loserRank: number, loserCount: number): number
 export function eliminationOrder(optionIds: readonly string[], winnerId: string, playIndex: number): string[]

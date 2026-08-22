@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Option, SpinPhase } from '../../domain/types'
-import { CLAW_AIM_MS, CLAW_DROP_MS, CLAW_GRAB_MS, CLAW_LIFT_MS, SLICE_COLORS, THEATER_MS } from './theater'
+import {
+  CLAW_AIM_MS,
+  CLAW_DROP_MS,
+  CLAW_GRAB_MS,
+  CLAW_LIFT_MS,
+  CLAW_SWEEP_HOPS,
+  CLAW_SWEEP_STEP_MS,
+  SLICE_COLORS,
+  THEATER_MS,
+} from './theater'
 import styles from './ClawMachine.module.css'
 
 type ClawMachineProps = {
@@ -10,7 +19,7 @@ type ClawMachineProps = {
   onComplete: () => void
 }
 
-type ClawStep = 'rest' | 'aim' | 'drop' | 'grab' | 'lift'
+type ClawStep = 'rest' | 'sweep' | 'aim' | 'drop' | 'grab' | 'lift'
 
 export const CLAW_RESET_MS = 40
 export const CLAW_REST_LEFT = '50%'
@@ -33,8 +42,30 @@ export function clawDropTop(index: number, count: number): string {
   return `${((row + 0.5) / rows) * 100}%`
 }
 
+export function clawSweepCycle(count: number): number[] {
+  const cols = clawColumns(count)
+  if (cols <= 1) {
+    return [0]
+  }
+  const cycle: number[] = []
+  for (let col = 0; col < cols; col += 1) {
+    cycle.push(col)
+  }
+  for (let col = cols - 2; col >= 1; col -= 1) {
+    cycle.push(col)
+  }
+  return cycle
+}
+
+export function clawSweepLefts(count: number, hops = CLAW_SWEEP_HOPS): string[] {
+  const cycle = clawSweepCycle(count)
+  return Array.from({ length: hops }, (_, hop) => clawAimLeft(cycle[hop % cycle.length], count))
+}
+
 function stepDuration(step: ClawStep): string {
   switch (step) {
+    case 'sweep':
+      return `${CLAW_SWEEP_STEP_MS}ms`
     case 'aim':
       return `${CLAW_AIM_MS}ms`
     case 'drop':
@@ -57,17 +88,25 @@ export default function ClawMachine({ options, winnerId, phase, onComplete }: Cl
   const raceToken = spinning ? winnerId : ''
   const [activeToken, setActiveToken] = useState(raceToken)
   const [step, setStep] = useState<ClawStep>('rest')
+  const [sweepIndex, setSweepIndex] = useState(0)
 
   if (raceToken !== activeToken) {
     setActiveToken(raceToken)
     setStep('rest')
+    setSweepIndex(0)
   }
 
   const displayStep: ClawStep = phase === 'revealed' ? 'lift' : step
   const cols = clawColumns(options.length)
   const holding = displayStep === 'grab' || displayStep === 'lift'
   const winner = options.find((option) => option.id === winnerId) ?? null
-  const left = displayStep === 'rest' ? CLAW_REST_LEFT : clawAimLeft(winnerIndex, options.length)
+  const sweepLefts = clawSweepLefts(options.length)
+  const left =
+    displayStep === 'rest'
+      ? CLAW_REST_LEFT
+      : displayStep === 'sweep'
+        ? sweepLefts[sweepIndex]
+        : clawAimLeft(winnerIndex, options.length)
   const top =
     displayStep === 'drop' || displayStep === 'grab'
       ? clawDropTop(winnerIndex, options.length)
@@ -82,20 +121,38 @@ export default function ClawMachine({ options, winnerId, phase, onComplete }: Cl
       return
     }
     const timers = [
-      window.setTimeout(() => setStep('aim'), CLAW_RESET_MS),
-      window.setTimeout(() => setStep('drop'), CLAW_RESET_MS + CLAW_AIM_MS),
-      window.setTimeout(() => setStep('grab'), CLAW_RESET_MS + CLAW_AIM_MS + CLAW_DROP_MS),
+      window.setTimeout(() => {
+        setStep('sweep')
+        setSweepIndex(0)
+      }, CLAW_RESET_MS),
+    ]
+    for (let hop = 1; hop < CLAW_SWEEP_HOPS; hop += 1) {
+      const index = hop
+      timers.push(
+        window.setTimeout(() => {
+          setStep('sweep')
+          setSweepIndex(index)
+        }, CLAW_RESET_MS + CLAW_SWEEP_STEP_MS * hop),
+      )
+    }
+    const afterSweep = CLAW_RESET_MS + CLAW_SWEEP_STEP_MS * CLAW_SWEEP_HOPS
+    timers.push(window.setTimeout(() => setStep('aim'), afterSweep))
+    timers.push(window.setTimeout(() => setStep('drop'), afterSweep + CLAW_AIM_MS))
+    timers.push(window.setTimeout(() => setStep('grab'), afterSweep + CLAW_AIM_MS + CLAW_DROP_MS))
+    timers.push(
       window.setTimeout(
         () => setStep('lift'),
-        CLAW_RESET_MS + CLAW_AIM_MS + CLAW_DROP_MS + CLAW_GRAB_MS,
+        afterSweep + CLAW_AIM_MS + CLAW_DROP_MS + CLAW_GRAB_MS,
       ),
+    )
+    timers.push(
       window.setTimeout(() => {
         if (!finished.current) {
           finished.current = true
           onCompleteRef.current()
         }
       }, CLAW_RESET_MS + THEATER_MS['claw-machine']),
-    ]
+    )
     return () => {
       for (const timer of timers) {
         window.clearTimeout(timer)

@@ -83,11 +83,25 @@
   pointer-events: none;
 }
 
+.claw[data-step='sweep'] {
+  transition-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.claw[data-step='drop'] {
+  transition-timing-function: cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+
+.claw[data-step='drop'] .cable,
+.claw[data-step='grab'] .cable {
+  height: 2.6rem;
+}
+
 .cable {
   width: 4px;
   height: 1.6rem;
   background: linear-gradient(90deg, #c8d0d8, #7a838c);
   box-shadow: 0 0 6px #fff4;
+  transition: height 180ms ease;
 }
 
 .head {

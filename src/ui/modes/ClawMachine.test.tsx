@@ -6,12 +6,16 @@ import ClawMachine, {
   clawAimLeft,
   clawColumns,
   clawDropTop,
+  clawSweepCycle,
+  clawSweepLefts,
 } from './ClawMachine'
 import {
   CLAW_AIM_MS,
   CLAW_DROP_MS,
   CLAW_GRAB_MS,
   CLAW_LIFT_MS,
+  CLAW_SWEEP_HOPS,
+  CLAW_SWEEP_STEP_MS,
   THEATER_MS,
 } from './theater'
 import { pickIndex } from '../../domain/pick'
@@ -56,6 +60,17 @@ describe('clawAimLeft and clawDropTop', () => {
   })
 })
 
+describe('clawSweepCycle and clawSweepLefts', () => {
+  it('ping-pongs across columns so the claw travels the rail', () => {
+    expect(clawSweepCycle(3)).toEqual([0, 1, 2, 1])
+    const stops = clawSweepLefts(3)
+    expect(stops).toHaveLength(CLAW_SWEEP_HOPS)
+    expect(stops[0]).toBe(clawAimLeft(0, 3))
+    expect(stops[1]).toBe(clawAimLeft(1, 3))
+    expect(new Set(stops).size).toBeGreaterThan(1)
+  })
+})
+
 describe('ClawMachine', () => {
   beforeEach(() => {
     vi.useFakeTimers()
@@ -66,8 +81,9 @@ describe('ClawMachine', () => {
     vi.useRealTimers()
   })
 
-  it('grabs the given winnerId without a second pick', () => {
+  it('sweeps the rail then grabs the given winnerId without a second pick', () => {
     const onComplete = vi.fn()
+    const stops = clawSweepLefts(3)
     render(
       <ClawMachine options={options} winnerId="a" phase="spinning" onComplete={onComplete} />,
     )
@@ -85,6 +101,24 @@ describe('ClawMachine', () => {
 
     act(() => {
       vi.advanceTimersByTime(CLAW_RESET_MS)
+    })
+
+    expect(clawEl()).toHaveAttribute('data-step', 'sweep')
+    expect(clawEl().style.left).toBe(stops[0])
+    expect(clawEl().style.top).toBe(CLAW_REST_TOP)
+    expect(clawEl().style.transitionDuration).toBe(`${CLAW_SWEEP_STEP_MS}ms`)
+
+    act(() => {
+      vi.advanceTimersByTime(CLAW_SWEEP_STEP_MS)
+    })
+
+    expect(clawEl()).toHaveAttribute('data-step', 'sweep')
+    expect(clawEl().style.left).toBe(stops[1])
+    expect(clawEl().style.left).not.toBe(clawAimLeft(0, 3))
+    expect(clawEl().style.top).toBe(CLAW_REST_TOP)
+
+    act(() => {
+      vi.advanceTimersByTime(CLAW_SWEEP_STEP_MS * (CLAW_SWEEP_HOPS - 1))
     })
 
     expect(clawEl()).toHaveAttribute('data-step', 'aim')
@@ -157,9 +191,9 @@ describe('ClawMachine', () => {
       vi.advanceTimersByTime(CLAW_RESET_MS)
     })
 
-    expect(clawEl()).toHaveAttribute('data-step', 'aim')
-    expect(clawEl().style.left).toBe(clawAimLeft(2, 3))
-    expect(clawEl().style.transitionDuration).toBe(`${CLAW_AIM_MS}ms`)
+    expect(clawEl()).toHaveAttribute('data-step', 'sweep')
+    expect(clawEl().style.left).toBe(clawSweepLefts(3)[0])
+    expect(clawEl().style.transitionDuration).toBe(`${CLAW_SWEEP_STEP_MS}ms`)
 
     act(() => {
       vi.advanceTimersByTime(THEATER_MS['claw-machine'])

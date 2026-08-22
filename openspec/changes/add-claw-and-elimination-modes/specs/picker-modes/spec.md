@@ -34,7 +34,7 @@ MUST allow roulette, slots, horse race, claw machine, or elimination board befor
 
 Each mode MUST visually resolve to the already-selected winner. MUST NOT run a second random selection.
 
-Claw machine MUST place each option in the cabinet as a labeled prize. The claw MUST aim at the winning prize, drop, grab it, and lift it. Every play MUST start from the rest pose and run forward, including plays after a previous grab.
+Claw machine MUST place each option in the cabinet as a labeled prize. The claw MUST travel along the rail across the prize section before dropping. Then it MUST drop, grab the winning prize, and lift it. Every play MUST start from the rest pose and run forward, including plays after a previous grab.
 
 Elimination board MUST show each option as a labeled light. Losers MUST go dark one by one in a mixed order that does not follow the option list. A roaming highlight MAY visit remaining lights, including the winner. The winning light MUST stay on. Every play MUST start with all lights on and eliminate forward, including plays after a previous finish. MUST NOT call pickIndex.
 
@@ -48,7 +48,13 @@ Elimination board MUST show each option as a labeled light. Losers MUST go dark 
 
 - GIVEN a selected winner and claw machine mode
 - WHEN the claw runs
-- THEN it grabs that prize and lifts it, and no second pick runs
+- THEN it travels the rail, then grabs that prize and lifts it, and no second pick runs
+
+#### Scenario: Claw machine sweeps before dropping
+
+- GIVEN a selected winner and claw machine mode
+- WHEN the claw is still on the rail
+- THEN it has moved across more than the winning column before it drops
 
 #### Scenario: Repeat claw plays start from rest
 
