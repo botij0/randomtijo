@@ -1,12 +1,12 @@
 import type { Mode } from '../domain/types'
 import styles from './ModePicker.module.css'
 
-const MODES: { value: Mode; label: string }[] = [
-  { value: 'roulette', label: 'Roulette' },
-  { value: 'slots', label: 'Slots' },
-  { value: 'horse-race', label: 'Horse race' },
-  { value: 'claw-machine', label: 'Claw machine' },
-  { value: 'elimination-board', label: 'Elimination' },
+const MODES: { value: Mode; label: string; mark: string }[] = [
+  { value: 'roulette', label: 'Roulette', mark: '🎡' },
+  { value: 'slots', label: 'Slots', mark: '🍒' },
+  { value: 'horse-race', label: 'Horse race', mark: '🐎' },
+  { value: 'claw-machine', label: 'Claw machine', mark: '🕹️' },
+  { value: 'elimination-board', label: 'Elimination', mark: '💡' },
 ]
 
 type ModePickerProps = {
@@ -19,7 +19,7 @@ export default function ModePicker({ mode, disabled, onChange }: ModePickerProps
   return (
     <fieldset className={styles.fieldset} disabled={disabled}>
       <legend className={styles.legend}>Picker mode</legend>
-      <div className={styles.row} role="radiogroup" aria-label="Picker mode">
+      <div className={styles.grid} role="radiogroup" aria-label="Picker mode">
         {MODES.map((entry) => (
           <label key={entry.value} className={styles.choice} data-active={mode === entry.value}>
             <input
@@ -30,7 +30,11 @@ export default function ModePicker({ mode, disabled, onChange }: ModePickerProps
               disabled={disabled}
               onChange={() => onChange(entry.value)}
             />
-            {entry.label}
+            <span className={styles.pip} aria-hidden="true" />
+            <span className={styles.mark} aria-hidden="true">
+              {entry.mark}
+            </span>
+            <span className={styles.name}>{entry.label}</span>
           </label>
         ))}
       </div>

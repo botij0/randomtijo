@@ -20,6 +20,16 @@ function ModeHarness({ initial }: { initial: PickerState }) {
 }
 
 describe('ModePicker', () => {
+  it('lists every mode as a radio in one group', () => {
+    render(<ModeHarness initial={createInitialState({ phase: 'idle', mode: 'roulette' })} />)
+
+    const group = screen.getByRole('radiogroup', { name: 'Picker mode' })
+    const radios = screen.getAllByRole('radio')
+    expect(radios).toHaveLength(5)
+    expect(group).toContainElement(radios[0])
+    expect(screen.getByRole('radio', { name: 'Roulette' })).toBeChecked()
+  })
+
   it('switches to slots while idle', async () => {
     const user = userEvent.setup()
     render(<ModeHarness initial={createInitialState({ phase: 'idle', mode: 'roulette' })} />)
