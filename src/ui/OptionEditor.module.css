@@ -9,11 +9,26 @@
 .heading {
   margin: 0;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-family: var(--font-display);
   font-size: 1.15rem;
   letter-spacing: 0.08em;
   color: var(--gold);
   text-transform: uppercase;
+  text-shadow: 0 0 14px color-mix(in srgb, var(--gold) 45%, transparent);
+}
+
+.heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--gold) 45%, transparent),
+    transparent
+  );
 }
 
 .list {
@@ -28,7 +43,20 @@
   max-height: min(22rem, 50vh);
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-color: var(--gold) #140a28;
+  scrollbar-color: color-mix(in srgb, var(--gold) 55%, transparent) transparent;
+}
+
+.list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--gold) 55%, transparent);
+  border-radius: 999px;
 }
 
 .row {
@@ -56,11 +84,22 @@
   padding: 0.55rem 0.7rem;
   font: inherit;
   font-weight: 800;
+  transition:
+    border-color 160ms ease,
+    box-shadow 200ms ease;
+}
+
+.input:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--gold) 72%, transparent);
 }
 
 .input:focus {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid transparent;
   outline-offset: 1px;
+  border-color: var(--cyan);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--cyan) 22%, transparent),
+    0 0 16px color-mix(in srgb, var(--cyan) 28%, transparent);
 }
 
 .input:disabled,
@@ -78,11 +117,25 @@
   font: inherit;
   font-weight: 800;
   cursor: pointer;
+  transition:
+    transform 140ms ease,
+    filter 180ms ease,
+    background 160ms ease,
+    box-shadow 200ms ease;
 }
 
 .remove {
   background: #3a1230;
   color: #ffb3d8;
+}
+
+.remove:hover:not(:disabled) {
+  background: #521a44;
+  filter: brightness(1.15);
+}
+
+.remove:active:not(:disabled) {
+  transform: scale(0.95);
 }
 
 .add {
@@ -91,4 +144,14 @@
   background: linear-gradient(180deg, #ffe27a, var(--gold));
   color: #2a1600;
   box-shadow: 0 0 16px color-mix(in srgb, var(--gold) 50%, transparent);
+}
+
+.add:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--gold) 68%, transparent);
+}
+
+.add:active:not(:disabled) {
+  transform: translateY(1px);
 }
