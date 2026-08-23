@@ -2,9 +2,24 @@
 
 Fair, theatrical table-side picker. Enter 2–12 options, choose roulette, slots, horse race, claw machine, or elimination, then spin. The winner is picked once, then the animation plays toward that result.
 
-Requires [Bun](https://bun.sh).
+## Deploy with Docker
 
-## Run
+```bash
+docker compose up --build -d
+```
+
+Open [http://localhost:8080](http://localhost:8080). Stop with `docker compose down`.
+
+Without Compose:
+
+```bash
+docker build -t randomtijo .
+docker run --rm -p 8080:80 randomtijo
+```
+
+## Develop locally
+
+Requires [Bun](https://bun.sh).
 
 ```bash
 bun install

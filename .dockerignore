@@ -1,0 +1,12 @@
+.git
+.atl
+.engram
+.codegraph
+.cursor
+.node_modules
+node_modules
+dist
+openspec
+*.local
+*.tsbuildinfo
+README.md
