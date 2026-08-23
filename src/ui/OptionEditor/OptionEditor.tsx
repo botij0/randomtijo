@@ -1,5 +1,5 @@
-import { isValidLabel } from '../domain/options'
-import type { Option } from '../domain/types'
+import { isValidLabel } from '../../domain/options'
+import type { Option } from '../../domain/types'
 import styles from './OptionEditor.module.css'
 
 type OptionEditorProps = {

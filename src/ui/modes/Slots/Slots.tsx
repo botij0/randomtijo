@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import type { Option, SpinPhase } from '../../domain/types'
-import { SLOT_LOOPS, THEATER_MS } from './theater'
+import type { Option, SpinPhase } from '../../../domain/types'
+import { SLOT_LOOPS, THEATER_MS } from '../theater'
 import styles from './Slots.module.css'
 
 type SlotsProps = {

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Option, SpinPhase } from '../../domain/types'
+import type { Option, SpinPhase } from '../../../domain/types'
 import {
   CLAW_AIM_MS,
   CLAW_DROP_MS,
@@ -9,7 +9,7 @@ import {
   CLAW_SWEEP_STEP_MS,
   SLICE_COLORS,
   THEATER_MS,
-} from './theater'
+} from '../theater'
 import styles from './ClawMachine.module.css'
 
 type ClawMachineProps = {

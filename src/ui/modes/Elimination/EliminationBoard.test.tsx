@@ -4,10 +4,10 @@ import EliminationBoard, {
   eliminationAtMs,
   eliminationOrder,
 } from './EliminationBoard'
-import { ELIMINATION_HOLD_MS, THEATER_MS } from './theater'
-import { pickIndex } from '../../domain/pick'
+import { ELIMINATION_HOLD_MS, THEATER_MS } from '../theater'
+import { pickIndex } from '../../../domain/pick'
 
-vi.mock('../../domain/pick', () => ({
+vi.mock('../../../domain/pick', () => ({
   pickIndex: vi.fn(() => {
     throw new Error('modes must not call pickIndex')
   }),

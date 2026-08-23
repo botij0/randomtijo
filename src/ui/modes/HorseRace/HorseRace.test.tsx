@@ -6,10 +6,10 @@ import HorseRace, {
   horseDurationMs,
   horseTravelLeft,
 } from './HorseRace'
-import { HORSE_RACE_STAGGER_MS, THEATER_MS } from './theater'
-import { pickIndex } from '../../domain/pick'
+import { HORSE_RACE_STAGGER_MS, THEATER_MS } from '../theater'
+import { pickIndex } from '../../../domain/pick'
 
-vi.mock('../../domain/pick', () => ({
+vi.mock('../../../domain/pick', () => ({
   pickIndex: vi.fn(() => {
     throw new Error('modes must not call pickIndex')
   }),

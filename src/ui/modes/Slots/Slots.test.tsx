@@ -1,9 +1,9 @@
 import { act, render, screen } from '@testing-library/react'
 import Slots, { reelOffset, SLOT_ITEM_HEIGHT } from './Slots'
-import { SLOT_LOOPS, THEATER_MS } from './theater'
-import { pickIndex } from '../../domain/pick'
+import { SLOT_LOOPS, THEATER_MS } from '../theater'
+import { pickIndex } from '../../../domain/pick'
 
-vi.mock('../../domain/pick', () => ({
+vi.mock('../../../domain/pick', () => ({
   pickIndex: vi.fn(() => {
     throw new Error('modes must not call pickIndex')
   }),

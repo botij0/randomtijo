@@ -22,10 +22,10 @@ import {
   CLAW_SWEEP_STEP_MS,
   SLICE_COLORS,
   THEATER_MS,
-} from './theater'
-import { pickIndex } from '../../domain/pick'
+} from '../theater'
+import { pickIndex } from '../../../domain/pick'
 
-vi.mock('../../domain/pick', () => ({
+vi.mock('../../../domain/pick', () => ({
   pickIndex: vi.fn(() => {
     throw new Error('modes must not call pickIndex')
   }),

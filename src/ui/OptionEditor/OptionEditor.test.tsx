@@ -2,9 +2,9 @@ import { useReducer } from 'react'
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import OptionEditor from './OptionEditor'
-import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from '../state/pickerReducer'
-import { validOptions } from '../domain/options'
-import type { PickerState } from '../domain/types'
+import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from '../../state/pickerReducer'
+import { validOptions } from '../../domain/options'
+import type { PickerState } from '../../domain/types'
 
 function EditorHarness({ initial }: { initial: PickerState }) {
   const [state, dispatch] = useReducer(pickerReducer, initial)

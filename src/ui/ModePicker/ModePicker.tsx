@@ -1,4 +1,4 @@
-import type { Mode } from '../domain/types'
+import type { Mode } from '../../domain/types'
 import styles from './ModePicker.module.css'
 
 const MODES: { value: Mode; label: string; mark: string }[] = [

@@ -2,8 +2,8 @@ import { useReducer } from 'react'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import ModePicker from './ModePicker'
-import { createInitialState, pickerReducer } from '../state/pickerReducer'
-import type { PickerState } from '../domain/types'
+import { createInitialState, pickerReducer } from '../../state/pickerReducer'
+import type { PickerState } from '../../domain/types'
 
 function ModeHarness({ initial }: { initial: PickerState }) {
   const [state, dispatch] = useReducer(pickerReducer, initial)

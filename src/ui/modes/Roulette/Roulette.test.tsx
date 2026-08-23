@@ -1,9 +1,9 @@
 import { act, render, screen } from '@testing-library/react'
 import Roulette, { targetRotation } from './Roulette'
-import { ROULETTE_TURNS, THEATER_MS } from './theater'
-import { pickIndex } from '../../domain/pick'
+import { ROULETTE_TURNS, THEATER_MS } from '../theater'
+import { pickIndex } from '../../../domain/pick'
 
-vi.mock('../../domain/pick', () => ({
+vi.mock('../../../domain/pick', () => ({
   pickIndex: vi.fn(() => {
     throw new Error('modes must not call pickIndex')
   }),

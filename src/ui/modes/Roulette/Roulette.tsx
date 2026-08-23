@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Option, SpinPhase } from '../../domain/types'
-import { ROULETTE_TURNS, SLICE_COLORS, THEATER_MS } from './theater'
+import type { Option, SpinPhase } from '../../../domain/types'
+import { ROULETTE_TURNS, SLICE_COLORS, THEATER_MS } from '../theater'
 import styles from './Roulette.module.css'
 
 type RouletteProps = {

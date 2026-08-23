@@ -1,4 +1,4 @@
-import type { Option, SpinPhase } from '../domain/types'
+import type { Option, SpinPhase } from '../../domain/types'
 import styles from './ResultBanner.module.css'
 
 type ResultBannerProps = {

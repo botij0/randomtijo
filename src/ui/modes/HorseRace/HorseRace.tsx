@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import type { Option, SpinPhase } from '../../domain/types'
-import { HORSE_RACE_STAGGER_MS, SLICE_COLORS, THEATER_MS } from './theater'
+import type { Option, SpinPhase } from '../../../domain/types'
+import { HORSE_RACE_STAGGER_MS, SLICE_COLORS, THEATER_MS } from '../theater'
 import styles from './HorseRace.module.css'
 
 type HorseRaceProps = {
