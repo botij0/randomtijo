@@ -1,4 +1,6 @@
-export type Mode = 'roulette' | 'slots' | 'horse-race' | 'claw-machine' | 'elimination-board'
+import type { Mode } from './modes'
+
+export type { Mode }
 
 export type SpinPhase = 'idle' | 'spinning' | 'revealed'
 

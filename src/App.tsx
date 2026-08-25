@@ -5,13 +5,9 @@ import { loadPicker, savePicker } from './persistence/localStore'
 import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from './state/pickerReducer'
 import ModePicker from './ui/ModePicker/ModePicker'
 import OptionEditor from './ui/OptionEditor/OptionEditor'
-import ClawMachine from './ui/modes/ClawMachine/ClawMachine'
-import EliminationBoard from './ui/modes/Elimination/EliminationBoard'
-import HorseRace from './ui/modes/HorseRace/HorseRace'
-import Roulette from './ui/modes/Roulette/Roulette'
-import Slots from './ui/modes/Slots/Slots'
 import ResultBanner from './ui/ResultBanner/ResultBanner'
 import { armTheater, theaterCompleteMs } from './ui/modes/theater'
+import { MODE_VIEWS } from './ui/modes/views'
 import styles from './App.module.css'
 
 function usePrefersReducedMotion(): boolean {
@@ -48,6 +44,7 @@ export default function App() {
   const spinning = state.phase === 'spinning'
   const winner = state.options.find((option) => option.id === state.winnerId) ?? null
   const playable = validOptions(state.options)
+  const View = MODE_VIEWS[state.mode]
 
   useEffect(() => {
     savePicker({ options: state.options, mode: state.mode })
@@ -102,21 +99,7 @@ export default function App() {
         </aside>
         <main className={styles.stage}>
           <div className={styles.theater}>
-            {state.mode === 'roulette' ? (
-              <Roulette options={playable} winnerId={state.winnerId} phase={state.phase} />
-            ) : null}
-            {state.mode === 'slots' ? (
-              <Slots options={playable} winnerId={state.winnerId} phase={state.phase} />
-            ) : null}
-            {state.mode === 'horse-race' ? (
-              <HorseRace options={playable} winnerId={state.winnerId} phase={state.phase} />
-            ) : null}
-            {state.mode === 'claw-machine' ? (
-              <ClawMachine options={playable} winnerId={state.winnerId} phase={state.phase} />
-            ) : null}
-            {state.mode === 'elimination-board' ? (
-              <EliminationBoard options={playable} winnerId={state.winnerId} phase={state.phase} />
-            ) : null}
+            <View options={playable} winnerId={state.winnerId} phase={state.phase} />
           </div>
           <button
             type="button"

@@ -1,3 +1,4 @@
+import { isMode } from '../domain/modes'
 import type { Mode, Option } from '../domain/types'
 
 export const STORAGE_KEY = 'randomtijo.picker.v1'
@@ -8,18 +9,6 @@ export type PersistedPicker = {
 }
 
 export type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
-
-const MODES: readonly Mode[] = [
-  'roulette',
-  'slots',
-  'horse-race',
-  'claw-machine',
-  'elimination-board',
-]
-
-function isMode(value: unknown): value is Mode {
-  return typeof value === 'string' && (MODES as readonly string[]).includes(value)
-}
 
 function parseOptions(value: unknown): Option[] | null {
   if (!Array.isArray(value) || value.length < 1 || value.length > 12) {

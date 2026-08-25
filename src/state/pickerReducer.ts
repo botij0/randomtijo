@@ -1,3 +1,4 @@
+import { DEFAULT_MODE } from '../domain/modes'
 import { validOptions } from '../domain/options'
 import type { Mode, Option, PickerState, SpinPhase } from '../domain/types'
 
@@ -19,7 +20,7 @@ export function createInitialState(overrides: Partial<PickerState> = {}): Picker
       { id: 'opt-2', label: 'Pizza Palace' },
       { id: 'opt-3', label: 'Bowling Alley' },
     ],
-    mode: 'roulette',
+    mode: DEFAULT_MODE,
     phase: 'idle',
     winnerId: null,
     ...overrides,
