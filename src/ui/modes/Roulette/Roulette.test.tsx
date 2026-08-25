@@ -1,6 +1,6 @@
-import { act, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import Roulette, { targetRotation } from './Roulette'
-import { ROULETTE_TURNS, THEATER_MS } from '../theater'
+import { ROULETTE_TURNS } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 
 vi.mock('../../../domain/pick', () => ({
@@ -54,58 +54,35 @@ describe('targetRotation', () => {
 
 describe('Roulette', () => {
   beforeEach(() => {
-    vi.useFakeTimers()
     vi.mocked(pickIndex).mockClear()
   })
 
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
-  it('completes toward the given winnerId without a second pick', () => {
-    const onComplete = vi.fn()
-    render(
-      <Roulette options={options} winnerId="b" phase="spinning" onComplete={onComplete} />,
-    )
+  it('shows the given winnerId without a second pick', () => {
+    render(<Roulette options={options} winnerId="b" phase="spinning" />)
 
     expect(screen.getByTestId('roulette')).toHaveAttribute('data-winner-id', 'b')
     expect(screen.getByText('Cafe Luna')).toBeInTheDocument()
     expect(pickIndex).not.toHaveBeenCalled()
-
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS.roulette)
-    })
-
-    expect(onComplete).toHaveBeenCalledTimes(1)
-    expect(pickIndex).not.toHaveBeenCalled()
   })
 
   it('rotates forward on every consecutive spin, even with the same winner', () => {
-    const onComplete = vi.fn()
     const { rerender } = render(
-      <Roulette options={options} winnerId="b" phase="spinning" onComplete={onComplete} />,
+      <Roulette options={options} winnerId="b" phase="spinning" />,
     )
     const wheel = screen.getByTestId('roulette-wheel')
 
     const first = rotationOf(wheel)
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS.roulette)
-    })
-    rerender(<Roulette options={options} winnerId="b" phase="revealed" onComplete={onComplete} />)
+    rerender(<Roulette options={options} winnerId="b" phase="revealed" />)
 
-    rerender(<Roulette options={options} winnerId="b" phase="spinning" onComplete={onComplete} />)
+    rerender(<Roulette options={options} winnerId="b" phase="spinning" />)
     const second = rotationOf(wheel)
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS.roulette)
-    })
-    rerender(<Roulette options={options} winnerId="b" phase="revealed" onComplete={onComplete} />)
+    rerender(<Roulette options={options} winnerId="b" phase="revealed" />)
 
-    rerender(<Roulette options={options} winnerId="a" phase="spinning" onComplete={onComplete} />)
+    rerender(<Roulette options={options} winnerId="a" phase="spinning" />)
     const third = rotationOf(wheel)
 
     expect(second).toBeGreaterThan(first)
     expect(third).toBeGreaterThan(second)
-    expect(onComplete).toHaveBeenCalledTimes(2)
     expect(pickIndex).not.toHaveBeenCalled()
   })
 })

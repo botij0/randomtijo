@@ -11,6 +11,7 @@ import HorseRace from './ui/modes/HorseRace/HorseRace'
 import Roulette from './ui/modes/Roulette/Roulette'
 import Slots from './ui/modes/Slots/Slots'
 import ResultBanner from './ui/ResultBanner/ResultBanner'
+import { armTheater, theaterCompleteMs } from './ui/modes/theater'
 import styles from './App.module.css'
 
 function usePrefersReducedMotion(): boolean {
@@ -58,6 +59,15 @@ export default function App() {
     }
   }, [state.phase, reducedMotion])
 
+  useEffect(() => {
+    if (!spinning || reducedMotion) {
+      return
+    }
+    return armTheater(theaterCompleteMs(state.mode), () => {
+      dispatch({ type: 'COMPLETE_SPIN' })
+    })
+  }, [spinning, reducedMotion, state.mode])
+
   function handleSpin() {
     if (!canSpin(state)) {
       return
@@ -93,44 +103,19 @@ export default function App() {
         <main className={styles.stage}>
           <div className={styles.theater}>
             {state.mode === 'roulette' ? (
-              <Roulette
-                options={playable}
-                winnerId={state.winnerId}
-                phase={state.phase}
-                onComplete={() => dispatch({ type: 'COMPLETE_SPIN' })}
-              />
+              <Roulette options={playable} winnerId={state.winnerId} phase={state.phase} />
             ) : null}
             {state.mode === 'slots' ? (
-              <Slots
-                options={playable}
-                winnerId={state.winnerId}
-                phase={state.phase}
-                onComplete={() => dispatch({ type: 'COMPLETE_SPIN' })}
-              />
+              <Slots options={playable} winnerId={state.winnerId} phase={state.phase} />
             ) : null}
             {state.mode === 'horse-race' ? (
-              <HorseRace
-                options={playable}
-                winnerId={state.winnerId}
-                phase={state.phase}
-                onComplete={() => dispatch({ type: 'COMPLETE_SPIN' })}
-              />
+              <HorseRace options={playable} winnerId={state.winnerId} phase={state.phase} />
             ) : null}
             {state.mode === 'claw-machine' ? (
-              <ClawMachine
-                options={playable}
-                winnerId={state.winnerId}
-                phase={state.phase}
-                onComplete={() => dispatch({ type: 'COMPLETE_SPIN' })}
-              />
+              <ClawMachine options={playable} winnerId={state.winnerId} phase={state.phase} />
             ) : null}
             {state.mode === 'elimination-board' ? (
-              <EliminationBoard
-                options={playable}
-                winnerId={state.winnerId}
-                phase={state.phase}
-                onComplete={() => dispatch({ type: 'COMPLETE_SPIN' })}
-              />
+              <EliminationBoard options={playable} winnerId={state.winnerId} phase={state.phase} />
             ) : null}
           </div>
           <button

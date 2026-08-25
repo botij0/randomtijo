@@ -9,3 +9,6 @@ dist/
 # TypeScript incremental
 *.tsbuildinfo
 node_modules/.tmp/
+
+
+.agents/

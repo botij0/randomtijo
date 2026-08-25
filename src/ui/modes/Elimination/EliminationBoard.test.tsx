@@ -1,10 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
-import EliminationBoard, {
-  ELIMINATION_RESET_MS,
-  eliminationAtMs,
-  eliminationOrder,
-} from './EliminationBoard'
-import { ELIMINATION_HOLD_MS, THEATER_MS } from '../theater'
+import EliminationBoard, { eliminationAtMs, eliminationOrder } from './EliminationBoard'
+import { ELIMINATION_HOLD_MS, THEATER_MS, THEATER_RESET_MS } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 
 vi.mock('../../../domain/pick', () => ({
@@ -58,15 +54,7 @@ describe('EliminationBoard', () => {
   })
 
   it('darkens every loser and leaves the given winnerId lit without a second pick', () => {
-    const onComplete = vi.fn()
-    render(
-      <EliminationBoard
-        options={options}
-        winnerId="b"
-        phase="spinning"
-        onComplete={onComplete}
-      />,
-    )
+    render(<EliminationBoard options={options} winnerId="b" phase="spinning" />)
 
     expect(screen.getByTestId('elimination-board')).toHaveAttribute('data-winner-id', 'b')
     expect(lightEl('a')).toHaveTextContent('Alpha')
@@ -79,7 +67,7 @@ describe('EliminationBoard', () => {
     expect(lightEl('c')).toHaveAttribute('data-eliminated', 'false')
 
     act(() => {
-      vi.advanceTimersByTime(ELIMINATION_RESET_MS)
+      vi.advanceTimersByTime(THEATER_RESET_MS)
     })
 
     expect(lightEl('a')).toHaveAttribute('data-eliminated', 'false')
@@ -107,60 +95,36 @@ describe('EliminationBoard', () => {
     expect(lightEl('c')).toHaveAttribute('data-eliminated', 'true')
     expect(lightEl('b')).toHaveAttribute('data-eliminated', 'false')
     expect(lightEl('b')).toHaveAttribute('data-survived', 'false')
-
-    act(() => {
-      vi.advanceTimersByTime(ELIMINATION_HOLD_MS)
-    })
-
-    expect(onComplete).toHaveBeenCalledTimes(1)
     expect(pickIndex).not.toHaveBeenCalled()
   })
 
   it('relights every option on a repeat play and eliminates toward the new winner', () => {
-    const onComplete = vi.fn()
     const { rerender } = render(
-      <EliminationBoard
-        options={options}
-        winnerId="b"
-        phase="spinning"
-        onComplete={onComplete}
-      />,
+      <EliminationBoard options={options} winnerId="b" phase="spinning" />,
     )
 
     act(() => {
-      vi.advanceTimersByTime(ELIMINATION_RESET_MS + THEATER_MS['elimination-board'])
+      vi.advanceTimersByTime(THEATER_RESET_MS + THEATER_MS['elimination-board'])
     })
-    rerender(
-      <EliminationBoard
-        options={options}
-        winnerId="b"
-        phase="revealed"
-        onComplete={onComplete}
-      />,
-    )
+    rerender(<EliminationBoard options={options} winnerId="b" phase="revealed" />)
     expect(lightEl('a')).toHaveAttribute('data-eliminated', 'true')
     expect(lightEl('c')).toHaveAttribute('data-eliminated', 'true')
     expect(lightEl('b')).toHaveAttribute('data-eliminated', 'false')
     expect(lightEl('b')).toHaveAttribute('data-survived', 'true')
 
-    rerender(
-      <EliminationBoard
-        options={options}
-        winnerId="a"
-        phase="spinning"
-        onComplete={onComplete}
-      />,
-    )
+    rerender(<EliminationBoard options={options} winnerId="a" phase="spinning" />)
     expect(lightEl('a')).toHaveAttribute('data-eliminated', 'false')
     expect(lightEl('b')).toHaveAttribute('data-eliminated', 'false')
     expect(lightEl('c')).toHaveAttribute('data-eliminated', 'false')
     expect(lightEl('b')).toHaveAttribute('data-survived', 'false')
 
     act(() => {
-      vi.advanceTimersByTime(ELIMINATION_RESET_MS + THEATER_MS['elimination-board'])
+      vi.advanceTimersByTime(THEATER_RESET_MS + THEATER_MS['elimination-board'])
     })
 
-    expect(onComplete).toHaveBeenCalledTimes(2)
+    expect(lightEl('b')).toHaveAttribute('data-eliminated', 'true')
+    expect(lightEl('c')).toHaveAttribute('data-eliminated', 'true')
+    expect(lightEl('a')).toHaveAttribute('data-eliminated', 'false')
     expect(pickIndex).not.toHaveBeenCalled()
   })
 })

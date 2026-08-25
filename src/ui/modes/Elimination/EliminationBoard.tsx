@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Option, SpinPhase } from '../../../domain/types'
-import { ELIMINATION_HOLD_MS, SLICE_COLORS, THEATER_MS } from '../theater'
+import { ELIMINATION_HOLD_MS, SLICE_COLORS, THEATER_MS, THEATER_RESET_MS } from '../theater'
 import styles from './EliminationBoard.module.css'
 
 type EliminationBoardProps = {
   options: Option[]
   winnerId: string | null
   phase: SpinPhase
-  onComplete: () => void
 }
 
-export const ELIMINATION_RESET_MS = 40
 export const ELIMINATION_SCAN_MS = 110
 
 function hashSeed(text: string): number {
@@ -62,15 +60,7 @@ export function eliminationAtMs(loserRank: number, loserCount: number): number {
   return Math.round(((loserRank + 1) / loserCount) * usable)
 }
 
-export default function EliminationBoard({
-  options,
-  winnerId,
-  phase,
-  onComplete,
-}: EliminationBoardProps) {
-  const finished = useRef(false)
-  const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
+export default function EliminationBoard({ options, winnerId, phase }: EliminationBoardProps) {
   const spinning = phase === 'spinning' && winnerId !== null
   const raceToken = spinning ? winnerId : ''
   const playIndexRef = useRef(spinning ? 1 : 0)
@@ -97,10 +87,6 @@ export default function EliminationBoard({
       : null
 
   useEffect(() => {
-    finished.current = false
-  }, [winnerId, phase])
-
-  useEffect(() => {
     if (!spinning || !winnerId) {
       return
     }
@@ -112,15 +98,7 @@ export default function EliminationBoard({
           next.add(loserId)
           return next
         })
-      }, ELIMINATION_RESET_MS + eliminationAtMs(rank, knockout.length)),
-    )
-    timers.push(
-      window.setTimeout(() => {
-        if (!finished.current) {
-          finished.current = true
-          onCompleteRef.current()
-        }
-      }, ELIMINATION_RESET_MS + THEATER_MS['elimination-board']),
+      }, THEATER_RESET_MS + eliminationAtMs(rank, knockout.length)),
     )
     let tick = playIndexRef.current
     const scan = window.setInterval(() => {

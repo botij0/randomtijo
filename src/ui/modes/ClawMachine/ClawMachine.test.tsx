@@ -6,7 +6,6 @@ import ClawMachine, {
   CLAW_RAIL_REM,
   CLAW_REST_LEFT,
   CLAW_REST_TOP,
-  CLAW_RESET_MS,
   clawAimLeft,
   clawColumns,
   clawDropTop,
@@ -22,6 +21,7 @@ import {
   CLAW_SWEEP_STEP_MS,
   SLICE_COLORS,
   THEATER_MS,
+  THEATER_RESET_MS,
 } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 
@@ -95,11 +95,8 @@ describe('ClawMachine', () => {
   })
 
   it('sweeps the rail then grabs the given winnerId without a second pick', () => {
-    const onComplete = vi.fn()
     const stops = clawSweepLefts(3)
-    render(
-      <ClawMachine options={options} winnerId="a" phase="spinning" onComplete={onComplete} />,
-    )
+    render(<ClawMachine options={options} winnerId="a" phase="spinning" />)
 
     expect(screen.getByTestId('claw-machine')).toHaveAttribute('data-winner-id', 'a')
     expect(prizeEl('a')).toHaveTextContent('Alpha')
@@ -113,7 +110,7 @@ describe('ClawMachine', () => {
     expect(prizeEl('a')).toHaveAttribute('data-grabbed', 'false')
 
     act(() => {
-      vi.advanceTimersByTime(CLAW_RESET_MS)
+      vi.advanceTimersByTime(THEATER_RESET_MS)
     })
 
     expect(clawEl()).toHaveAttribute('data-step', 'sweep')
@@ -168,34 +165,23 @@ describe('ClawMachine', () => {
     expect(clawEl().style.top).toBe(CLAW_REST_TOP)
     expect(clawEl().style.transitionDuration).toBe(`${CLAW_LIFT_MS}ms`)
     expect(prizeEl('a')).toHaveAttribute('data-grabbed', 'true')
-
-    act(() => {
-      vi.advanceTimersByTime(CLAW_LIFT_MS)
-    })
-
-    expect(onComplete).toHaveBeenCalledTimes(1)
     expect(pickIndex).not.toHaveBeenCalled()
   })
 
   it('resets to rest on a repeat play and grabs the new winner', () => {
-    const onComplete = vi.fn()
     const { rerender } = render(
-      <ClawMachine options={options} winnerId="a" phase="spinning" onComplete={onComplete} />,
+      <ClawMachine options={options} winnerId="a" phase="spinning" />,
     )
 
     act(() => {
-      vi.advanceTimersByTime(CLAW_RESET_MS + THEATER_MS['claw-machine'])
+      vi.advanceTimersByTime(THEATER_RESET_MS + THEATER_MS['claw-machine'])
     })
-    rerender(
-      <ClawMachine options={options} winnerId="a" phase="revealed" onComplete={onComplete} />,
-    )
+    rerender(<ClawMachine options={options} winnerId="a" phase="revealed" />)
     expect(clawEl()).toHaveAttribute('data-step', 'lift')
     expect(prizeEl('a')).toHaveAttribute('data-grabbed', 'true')
     expect(clawEl()).toHaveTextContent('Alpha')
 
-    rerender(
-      <ClawMachine options={options} winnerId="c" phase="spinning" onComplete={onComplete} />,
-    )
+    rerender(<ClawMachine options={options} winnerId="c" phase="spinning" />)
     expect(clawEl()).toHaveAttribute('data-step', 'rest')
     expect(clawEl().style.left).toBe(CLAW_REST_LEFT)
     expect(clawEl().style.transitionDuration).toBe('0ms')
@@ -203,18 +189,12 @@ describe('ClawMachine', () => {
     expect(prizeEl('c')).toHaveAttribute('data-grabbed', 'false')
 
     act(() => {
-      vi.advanceTimersByTime(CLAW_RESET_MS)
+      vi.advanceTimersByTime(THEATER_RESET_MS)
     })
 
     expect(clawEl()).toHaveAttribute('data-step', 'sweep')
     expect(clawEl().style.left).toBe(clawSweepLefts(3)[0])
     expect(clawEl().style.transitionDuration).toBe(`${CLAW_SWEEP_STEP_MS}ms`)
-
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS['claw-machine'])
-    })
-
-    expect(onComplete).toHaveBeenCalledTimes(2)
     expect(pickIndex).not.toHaveBeenCalled()
   })
 })

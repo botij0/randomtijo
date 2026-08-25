@@ -7,7 +7,6 @@ type RouletteProps = {
   options: Option[]
   winnerId: string | null
   phase: SpinPhase
-  onComplete: () => void
 }
 
 function slicePath(index: number, count: number, radius = 100, cx = 100, cy = 100): string {
@@ -33,18 +32,11 @@ export function targetRotation(currentDeg: number, winnerIndex: number, count: n
   return turnsBase + ROULETTE_TURNS * 360 + (360 - winnerCenter)
 }
 
-export default function Roulette({ options, winnerId, phase, onComplete }: RouletteProps) {
-  const finished = useRef(false)
-  const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
+export default function Roulette({ options, winnerId, phase }: RouletteProps) {
   const rotationRef = useRef(0)
   const [angle, setAngle] = useState(0)
   const winnerIndex = Math.max(0, options.findIndex((option) => option.id === winnerId))
   const spinning = phase === 'spinning' && winnerId !== null
-
-  useEffect(() => {
-    finished.current = false
-  }, [winnerId, phase])
 
   useEffect(() => {
     if (!spinning || options.length === 0) {
@@ -54,19 +46,6 @@ export default function Roulette({ options, winnerId, phase, onComplete }: Roule
     rotationRef.current = next
     setAngle(next)
   }, [spinning, winnerId, options.length, winnerIndex])
-
-  useEffect(() => {
-    if (!spinning) {
-      return
-    }
-    const timer = window.setTimeout(() => {
-      if (!finished.current) {
-        finished.current = true
-        onCompleteRef.current()
-      }
-    }, THEATER_MS.roulette)
-    return () => window.clearTimeout(timer)
-  }, [spinning, winnerId])
 
   return (
     <div

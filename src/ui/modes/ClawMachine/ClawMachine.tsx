@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Option, SpinPhase } from '../../../domain/types'
 import {
   CLAW_AIM_MS,
@@ -8,7 +8,7 @@ import {
   CLAW_SWEEP_HOPS,
   CLAW_SWEEP_STEP_MS,
   SLICE_COLORS,
-  THEATER_MS,
+  THEATER_RESET_MS,
 } from '../theater'
 import styles from './ClawMachine.module.css'
 
@@ -16,12 +16,10 @@ type ClawMachineProps = {
   options: Option[]
   winnerId: string | null
   phase: SpinPhase
-  onComplete: () => void
 }
 
 type ClawStep = 'rest' | 'sweep' | 'aim' | 'drop' | 'grab' | 'lift'
 
-export const CLAW_RESET_MS = 40
 export const CLAW_REST_LEFT = '50%'
 export const CLAW_REST_TOP = '0.2rem'
 
@@ -86,10 +84,7 @@ function stepDuration(step: ClawStep): string {
   }
 }
 
-export default function ClawMachine({ options, winnerId, phase, onComplete }: ClawMachineProps) {
-  const finished = useRef(false)
-  const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
+export default function ClawMachine({ options, winnerId, phase }: ClawMachineProps) {
   const winnerIndex = Math.max(0, options.findIndex((option) => option.id === winnerId))
   const spinning = phase === 'spinning' && winnerId !== null
   const raceToken = spinning ? winnerId : ''
@@ -120,10 +115,6 @@ export default function ClawMachine({ options, winnerId, phase, onComplete }: Cl
       : CLAW_REST_TOP
 
   useEffect(() => {
-    finished.current = false
-  }, [winnerId, phase])
-
-  useEffect(() => {
     if (!spinning) {
       return
     }
@@ -131,7 +122,7 @@ export default function ClawMachine({ options, winnerId, phase, onComplete }: Cl
       window.setTimeout(() => {
         setStep('sweep')
         setSweepIndex(0)
-      }, CLAW_RESET_MS),
+      }, THEATER_RESET_MS),
     ]
     for (let hop = 1; hop < CLAW_SWEEP_HOPS; hop += 1) {
       const index = hop
@@ -139,10 +130,10 @@ export default function ClawMachine({ options, winnerId, phase, onComplete }: Cl
         window.setTimeout(() => {
           setStep('sweep')
           setSweepIndex(index)
-        }, CLAW_RESET_MS + CLAW_SWEEP_STEP_MS * hop),
+        }, THEATER_RESET_MS + CLAW_SWEEP_STEP_MS * hop),
       )
     }
-    const afterSweep = CLAW_RESET_MS + CLAW_SWEEP_STEP_MS * CLAW_SWEEP_HOPS
+    const afterSweep = THEATER_RESET_MS + CLAW_SWEEP_STEP_MS * CLAW_SWEEP_HOPS
     timers.push(window.setTimeout(() => setStep('aim'), afterSweep))
     timers.push(window.setTimeout(() => setStep('drop'), afterSweep + CLAW_AIM_MS))
     timers.push(window.setTimeout(() => setStep('grab'), afterSweep + CLAW_AIM_MS + CLAW_DROP_MS))
@@ -151,14 +142,6 @@ export default function ClawMachine({ options, winnerId, phase, onComplete }: Cl
         () => setStep('lift'),
         afterSweep + CLAW_AIM_MS + CLAW_DROP_MS + CLAW_GRAB_MS,
       ),
-    )
-    timers.push(
-      window.setTimeout(() => {
-        if (!finished.current) {
-          finished.current = true
-          onCompleteRef.current()
-        }
-      }, CLAW_RESET_MS + THEATER_MS['claw-machine']),
     )
     return () => {
       for (const timer of timers) {

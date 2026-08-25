@@ -7,7 +7,6 @@ type SlotsProps = {
   options: Option[]
   winnerId: string | null
   phase: SpinPhase
-  onComplete: () => void
 }
 
 export const SLOT_ITEM_HEIGHT = 64
@@ -19,10 +18,7 @@ export function reelOffset(currentPx: number, winnerIndex: number, count: number
   return currentPx + SLOT_LOOPS * cycle + delta
 }
 
-export default function Slots({ options, winnerId, phase, onComplete }: SlotsProps) {
-  const finished = useRef(false)
-  const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
+export default function Slots({ options, winnerId, phase }: SlotsProps) {
   const positionRef = useRef(0)
   const [offset, setOffset] = useState(0)
   const winnerIndex = Math.max(0, options.findIndex((option) => option.id === winnerId))
@@ -34,10 +30,6 @@ export default function Slots({ options, winnerId, phase, onComplete }: SlotsPro
     }
     return copies
   }, [options])
-
-  useEffect(() => {
-    finished.current = false
-  }, [winnerId, phase])
 
   useEffect(() => {
     if (!spinning || options.length === 0) {
@@ -56,19 +48,6 @@ export default function Slots({ options, winnerId, phase, onComplete }: SlotsPro
     positionRef.current = snapped
     setOffset(snapped)
   }, [phase, winnerId, options.length, winnerIndex])
-
-  useEffect(() => {
-    if (!spinning) {
-      return
-    }
-    const timer = window.setTimeout(() => {
-      if (!finished.current) {
-        finished.current = true
-        onCompleteRef.current()
-      }
-    }, THEATER_MS.slots)
-    return () => window.clearTimeout(timer)
-  }, [spinning, winnerId])
 
   const translate = spinning || phase === 'revealed' ? offset : 0
 

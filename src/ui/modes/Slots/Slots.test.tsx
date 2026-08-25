@@ -1,6 +1,6 @@
-import { act, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import Slots, { reelOffset, SLOT_ITEM_HEIGHT } from './Slots'
-import { SLOT_LOOPS, THEATER_MS } from '../theater'
+import { SLOT_LOOPS } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 
 vi.mock('../../../domain/pick', () => ({
@@ -51,62 +51,41 @@ describe('reelOffset', () => {
 
 describe('Slots', () => {
   beforeEach(() => {
-    vi.useFakeTimers()
     vi.mocked(pickIndex).mockClear()
   })
 
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
-  it('reels to the given winnerId without a second pick', () => {
-    const onComplete = vi.fn()
-    render(<Slots options={options} winnerId="b" phase="spinning" onComplete={onComplete} />)
+  it('shows the given winnerId without a second pick', () => {
+    render(<Slots options={options} winnerId="b" phase="spinning" />)
 
     expect(screen.getByTestId('slots')).toHaveAttribute('data-winner-id', 'b')
     expect(screen.getAllByText('Cafe Luna').length).toBeGreaterThan(0)
     expect(pickIndex).not.toHaveBeenCalled()
-
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS.slots)
-    })
-
-    expect(onComplete).toHaveBeenCalledTimes(1)
-    expect(pickIndex).not.toHaveBeenCalled()
   })
 
   it('scrolls forward on every spin and snap-settles congruent to the winner', () => {
-    const onComplete = vi.fn()
     const { rerender } = render(
-      <Slots options={options} winnerId="b" phase="spinning" onComplete={onComplete} />,
+      <Slots options={options} winnerId="b" phase="spinning" />,
     )
     const reel = screen.getByTestId('slots-reel')
 
     const first = offsetOf(reel)
     expect(first).toBeGreaterThanOrEqual(SLOT_LOOPS * 3 * SLOT_ITEM_HEIGHT)
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS.slots)
-    })
-    rerender(<Slots options={options} winnerId="b" phase="revealed" onComplete={onComplete} />)
+    rerender(<Slots options={options} winnerId="b" phase="revealed" />)
 
     const snapped = offsetOf(reel)
     expect(snapped).toBe(1 * SLOT_ITEM_HEIGHT)
 
-    rerender(<Slots options={options} winnerId="b" phase="spinning" onComplete={onComplete} />)
+    rerender(<Slots options={options} winnerId="b" phase="spinning" />)
     const second = offsetOf(reel)
     expect(second).toBeGreaterThan(snapped)
     expect(second - snapped).toBeGreaterThanOrEqual(SLOT_LOOPS * 3 * SLOT_ITEM_HEIGHT)
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS.slots)
-    })
-    rerender(<Slots options={options} winnerId="b" phase="revealed" onComplete={onComplete} />)
+    rerender(<Slots options={options} winnerId="b" phase="revealed" />)
 
-    rerender(<Slots options={options} winnerId="a" phase="spinning" onComplete={onComplete} />)
+    rerender(<Slots options={options} winnerId="a" phase="spinning" />)
     const third = offsetOf(reel)
 
     expect(third).toBeGreaterThan(second)
     expect(third % (3 * SLOT_ITEM_HEIGHT)).toBe(0 * SLOT_ITEM_HEIGHT)
-    expect(onComplete).toHaveBeenCalledTimes(2)
     expect(pickIndex).not.toHaveBeenCalled()
   })
 })

@@ -1,16 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Option, SpinPhase } from '../../../domain/types'
-import { HORSE_RACE_STAGGER_MS, SLICE_COLORS, THEATER_MS } from '../theater'
+import { HORSE_RACE_STAGGER_MS, SLICE_COLORS, THEATER_MS, THEATER_RESET_MS } from '../theater'
 import styles from './HorseRace.module.css'
 
 type HorseRaceProps = {
   options: Option[]
   winnerId: string | null
   phase: SpinPhase
-  onComplete: () => void
 }
-
-export const HORSE_RACE_RESET_MS = 40
 
 export const GATE_LEFT = '0.35rem'
 export const WINNER_FINISH_LEFT = 'calc(100% - 7.5rem)'
@@ -42,10 +39,7 @@ export function horseTravelLeft(
   return `calc(100% - ${10.4 + loserRank * 0.7}rem)`
 }
 
-export default function HorseRace({ options, winnerId, phase, onComplete }: HorseRaceProps) {
-  const finished = useRef(false)
-  const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
+export default function HorseRace({ options, winnerId, phase }: HorseRaceProps) {
   const winnerIndex = Math.max(0, options.findIndex((option) => option.id === winnerId))
   const spinning = phase === 'spinning' && winnerId !== null
   const raceToken = spinning ? winnerId : ''
@@ -60,30 +54,13 @@ export default function HorseRace({ options, winnerId, phase, onComplete }: Hors
   const atFinish = phase === 'revealed' || (spinning && armed)
 
   useEffect(() => {
-    finished.current = false
-  }, [winnerId, phase])
-
-  useEffect(() => {
     if (!spinning) {
       return
     }
     const arm = window.setTimeout(() => {
       setArmed(true)
-    }, HORSE_RACE_RESET_MS)
+    }, THEATER_RESET_MS)
     return () => window.clearTimeout(arm)
-  }, [spinning, winnerId])
-
-  useEffect(() => {
-    if (!spinning) {
-      return
-    }
-    const timer = window.setTimeout(() => {
-      if (!finished.current) {
-        finished.current = true
-        onCompleteRef.current()
-      }
-    }, HORSE_RACE_RESET_MS + THEATER_MS['horse-race'])
-    return () => window.clearTimeout(timer)
   }, [spinning, winnerId])
 
   return (

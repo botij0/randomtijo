@@ -9,6 +9,8 @@ export const CLAW_LIFT_MS = 1800
 
 export const ELIMINATION_HOLD_MS = 800
 
+export const THEATER_RESET_MS = 40
+
 export const THEATER_MS: Record<Mode, number> = {
   roulette: 4000,
   slots: 3000,
@@ -16,6 +18,26 @@ export const THEATER_MS: Record<Mode, number> = {
   'claw-machine':
     CLAW_SWEEP_HOPS * CLAW_SWEEP_STEP_MS + CLAW_AIM_MS + CLAW_DROP_MS + CLAW_GRAB_MS + CLAW_LIFT_MS,
   'elimination-board': 5000,
+}
+
+const RESET_MODES: ReadonlySet<Mode> = new Set(['horse-race', 'claw-machine', 'elimination-board'])
+
+export function theaterCompleteMs(mode: Mode): number {
+  return THEATER_MS[mode] + (RESET_MODES.has(mode) ? THEATER_RESET_MS : 0)
+}
+
+export function armTheater(delayMs: number, onComplete: () => void): () => void {
+  let finished = false
+  const timer = window.setTimeout(() => {
+    if (!finished) {
+      finished = true
+      onComplete()
+    }
+  }, delayMs)
+  return () => {
+    finished = true
+    window.clearTimeout(timer)
+  }
 }
 
 export const HORSE_RACE_STAGGER_MS = 420

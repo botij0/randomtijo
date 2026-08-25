@@ -1,12 +1,11 @@
 import { act, render, screen } from '@testing-library/react'
 import HorseRace, {
   GATE_LEFT,
-  HORSE_RACE_RESET_MS,
   WINNER_FINISH_LEFT,
   horseDurationMs,
   horseTravelLeft,
 } from './HorseRace'
-import { HORSE_RACE_STAGGER_MS, THEATER_MS } from '../theater'
+import { HORSE_RACE_STAGGER_MS, THEATER_MS, THEATER_RESET_MS } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 
 vi.mock('../../../domain/pick', () => ({
@@ -59,10 +58,7 @@ describe('HorseRace', () => {
   })
 
   it('races labeled horses to the given winnerId without a second pick', () => {
-    const onComplete = vi.fn()
-    render(
-      <HorseRace options={options} winnerId="b" phase="spinning" onComplete={onComplete} />,
-    )
+    render(<HorseRace options={options} winnerId="b" phase="spinning" />)
 
     expect(screen.getByTestId('horse-race')).toHaveAttribute('data-winner-id', 'b')
     expect(horseEl('b')).toHaveTextContent('Cafe Luna')
@@ -73,7 +69,7 @@ describe('HorseRace', () => {
     expect(horseEl('b').style.left).toBe(GATE_LEFT)
 
     act(() => {
-      vi.advanceTimersByTime(HORSE_RACE_RESET_MS)
+      vi.advanceTimersByTime(THEATER_RESET_MS)
     })
 
     expect(horseEl('b').style.left).toBe(WINNER_FINISH_LEFT)
@@ -86,37 +82,30 @@ describe('HorseRace', () => {
     expect(Number.parseFloat(horseEl('c').style.transitionDuration)).toBeGreaterThan(
       THEATER_MS['horse-race'],
     )
-
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS['horse-race'])
-    })
-
-    expect(onComplete).toHaveBeenCalledTimes(1)
     expect(pickIndex).not.toHaveBeenCalled()
   })
 
   it('resets to the gate on a repeat race and the winner still arrives first', () => {
-    const onComplete = vi.fn()
     const { rerender } = render(
-      <HorseRace options={options} winnerId="b" phase="spinning" onComplete={onComplete} />,
+      <HorseRace options={options} winnerId="b" phase="spinning" />,
     )
 
     act(() => {
-      vi.advanceTimersByTime(HORSE_RACE_RESET_MS + THEATER_MS['horse-race'])
+      vi.advanceTimersByTime(THEATER_RESET_MS + THEATER_MS['horse-race'])
     })
-    rerender(<HorseRace options={options} winnerId="b" phase="revealed" onComplete={onComplete} />)
+    rerender(<HorseRace options={options} winnerId="b" phase="revealed" />)
     expect(horseEl('b').style.left).toBe(WINNER_FINISH_LEFT)
     expect(horseEl('b')).toHaveAttribute('data-winner', 'true')
     expect(horseEl('b')).toHaveTextContent('Winner')
     expect(horseEl('a')).toHaveAttribute('data-winner', 'false')
     expect(horseEl('a').style.left).not.toBe(WINNER_FINISH_LEFT)
 
-    rerender(<HorseRace options={options} winnerId="a" phase="spinning" onComplete={onComplete} />)
+    rerender(<HorseRace options={options} winnerId="a" phase="spinning" />)
     expect(horseEl('a').style.left).toBe(GATE_LEFT)
     expect(horseEl('a').style.transitionDuration).toBe('0ms')
 
     act(() => {
-      vi.advanceTimersByTime(HORSE_RACE_RESET_MS)
+      vi.advanceTimersByTime(THEATER_RESET_MS)
     })
 
     expect(horseEl('a').style.left).toBe(WINNER_FINISH_LEFT)
@@ -124,12 +113,6 @@ describe('HorseRace', () => {
     expect(Number.parseFloat(horseEl('b').style.transitionDuration)).toBeGreaterThan(
       THEATER_MS['horse-race'],
     )
-
-    act(() => {
-      vi.advanceTimersByTime(THEATER_MS['horse-race'])
-    })
-
-    expect(onComplete).toHaveBeenCalledTimes(2)
     expect(pickIndex).not.toHaveBeenCalled()
   })
 })
