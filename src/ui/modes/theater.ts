@@ -40,8 +40,6 @@ export function armTheater(delayMs: number, onComplete: () => void): () => void 
   }
 }
 
-export const HORSE_RACE_STAGGER_MS = 420
-
 export const ROULETTE_TURNS = 5
 
 export const SLOT_LOOPS = 3

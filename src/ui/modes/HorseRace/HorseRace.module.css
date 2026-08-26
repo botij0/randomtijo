@@ -86,8 +86,11 @@
   gap: 0.2rem;
   max-width: 8.6rem;
   transform: translateY(-50%);
-  transition-property: left;
-  transition-timing-function: cubic-bezier(0.12, 0.55, 0.28, 1);
+}
+
+.horse[data-racing='true'] {
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
 }
 
 .horse[data-winner='true'] {
@@ -160,6 +163,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .horse[data-racing='true'] {
+    animation: none;
+  }
+
   .horse[data-running='true'] .sprite {
     animation: none;
   }
