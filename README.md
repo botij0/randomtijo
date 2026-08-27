@@ -1,7 +1,18 @@
 <img width="1146" height="250" alt="image" src="https://github.com/user-attachments/assets/f8d55d99-cca5-4667-9748-9230851d5bcc" />
 
+---
 
-Fair, theatrical table-side picker. Enter 2–12 options, choose roulette, slots, horse race, claw machine, or elimination, then spin. The winner is picked once, then the animation plays toward that result.
+Fair arcade picker for a group at the table. Type `2–12` options, choose a mode, and spin!
+
+## Description
+
+One winner is chosen up front with equal chance; the theater then plays toward that result and never re-rolls.
+
+1. Enter options (at least two, at most twelve).
+2. Choose roulette, slots, horse race, claw machine, or elimination.
+3. Spin. The winner is already chosen; what you see is the reveal.
+
+Runs in the browser with no accounts or server. Options and last mode stay in local storage.
 
 ## Deploy with Docker
 
