@@ -12,3 +12,9 @@ node_modules/.tmp/
 
 
 .agents/
+
+.codegraph
+
+.engram/
+
+.openspec/
