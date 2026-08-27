@@ -1,4 +1,5 @@
-# randomtijo
+<img width="1146" height="250" alt="image" src="https://github.com/user-attachments/assets/f8d55d99-cca5-4667-9748-9230851d5bcc" />
+
 
 Fair, theatrical table-side picker. Enter 2–12 options, choose roulette, slots, horse race, claw machine, or elimination, then spin. The winner is picked once, then the animation plays toward that result.
 
