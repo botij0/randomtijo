@@ -1,11 +1,12 @@
 import { act, render, screen } from '@testing-library/react'
-import HorseRace, {
+import HorseRace from './HorseRace'
+import {
   GATE_LEFT,
   WINNER_FINISH_LEFT,
   horseRaceWaypoints,
   horseRunName,
   horseTrackLeft,
-} from './HorseRace'
+} from './horseRaceUtils'
 import { THEATER_MS, THEATER_RESET_MS } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 

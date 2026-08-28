@@ -1,5 +1,6 @@
 import { act, render, screen } from '@testing-library/react'
-import EliminationBoard, { eliminationAtMs, eliminationOrder } from './EliminationBoard'
+import EliminationBoard from './EliminationBoard'
+import { eliminationAtMs, eliminationOrder } from './eliminationUtils'
 import { ELIMINATION_HOLD_MS, THEATER_MS, THEATER_RESET_MS } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 

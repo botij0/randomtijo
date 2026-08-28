@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
-import Roulette, { targetRotation } from './Roulette'
+import Roulette from './Roulette'
+import { targetRotation } from './rouletteUtils'
 import { ROULETTE_TURNS } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 

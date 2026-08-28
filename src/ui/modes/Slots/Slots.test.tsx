@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
-import Slots, { reelOffset, SLOT_ITEM_HEIGHT } from './Slots'
+import Slots from './Slots'
+import { reelOffset, SLOT_ITEM_HEIGHT } from './slotsUtils'
 import { SLOT_LOOPS } from '../theater'
 import { pickIndex } from '../../../domain/pick'
 

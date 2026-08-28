@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Option, SpinPhase } from '../../../domain/types'
 import { SLOT_LOOPS, THEATER_MS } from '../theater'
 import styles from './Slots.module.css'
+import { reelOffset, SLOT_ITEM_HEIGHT } from './slotsUtils'
 
 type SlotsProps = {
   options: Option[]
@@ -9,14 +10,6 @@ type SlotsProps = {
   phase: SpinPhase
 }
 
-export const SLOT_ITEM_HEIGHT = 64
-
-export function reelOffset(currentPx: number, winnerIndex: number, count: number): number {
-  const cycle = count * SLOT_ITEM_HEIGHT
-  const winnerPx = winnerIndex * SLOT_ITEM_HEIGHT
-  const delta = (((winnerPx - currentPx) % cycle) + cycle) % cycle
-  return currentPx + SLOT_LOOPS * cycle + delta
-}
 
 export default function Slots({ options, winnerId, phase }: SlotsProps) {
   const positionRef = useRef(0)

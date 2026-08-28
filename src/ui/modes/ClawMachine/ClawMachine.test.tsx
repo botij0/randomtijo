@@ -1,5 +1,5 @@
 import { act, render, screen } from '@testing-library/react'
-import ClawMachine, {
+import {
   CLAW_GAP_REM,
   CLAW_GRAB_OFFSET_REM,
   CLAW_PRIZE_REM,
@@ -11,7 +11,7 @@ import ClawMachine, {
   clawDropTop,
   clawSweepCycle,
   clawSweepLefts,
-} from './ClawMachine'
+} from './clawMachineUtils'
 import {
   CLAW_AIM_MS,
   CLAW_DROP_MS,
@@ -24,6 +24,7 @@ import {
   THEATER_RESET_MS,
 } from '../theater'
 import { pickIndex } from '../../../domain/pick'
+import ClawMachine from './ClawMachine'
 
 vi.mock('../../../domain/pick', () => ({
   pickIndex: vi.fn(() => {
