@@ -35,6 +35,10 @@ export function canSpin(state: PickerState): boolean {
   return !isSpinLocked(state.phase) && validOptions(state.options).length >= 2
 }
 
+function withOptions(state: PickerState, options: Option[]): PickerState {
+  return { ...state, options, phase: 'idle', winnerId: null }
+}
+
 export function pickerReducer(state: PickerState, action: PickerAction): PickerState {
   switch (action.type) {
     case 'ADD_OPTION': {
@@ -44,30 +48,27 @@ export function pickerReducer(state: PickerState, action: PickerAction): PickerS
       if (state.options.some((option) => option.id === action.id)) {
         return state
       }
-      return {
-        ...state,
-        options: [...state.options, { id: action.id, label: '' }],
-      }
+      return withOptions(state, [...state.options, { id: action.id, label: '' }])
     }
     case 'UPDATE_OPTION': {
       if (isSpinLocked(state.phase)) {
         return state
       }
-      return {
-        ...state,
-        options: state.options.map((option) =>
+      return withOptions(
+        state,
+        state.options.map((option) =>
           option.id === action.id ? { ...option, label: action.label } : option,
         ),
-      }
+      )
     }
     case 'REMOVE_OPTION': {
       if (isSpinLocked(state.phase)) {
         return state
       }
-      return {
-        ...state,
-        options: state.options.filter((option) => option.id !== action.id),
-      }
+      return withOptions(
+        state,
+        state.options.filter((option) => option.id !== action.id),
+      )
     }
     case 'SET_MODE': {
       if (isSpinLocked(state.phase)) {
