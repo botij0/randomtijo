@@ -7,3 +7,8 @@ export function isValidLabel(label: string): boolean {
 export function validOptions(options: readonly Option[]): Option[] {
   return options.filter((option) => isValidLabel(option.label))
 }
+
+export function createOptionId(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(16))
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
+}

@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from 'react'
-import { validOptions } from './domain/options'
+import { createOptionId, validOptions } from './domain/options'
 import { pickIndex } from './domain/pick'
 import { loadPicker, savePicker } from './persistence/localStore'
 import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from './state/pickerReducer'
@@ -92,7 +92,7 @@ export default function App() {
             options={state.options}
             disabled={spinning}
             canAdd={state.options.length < MAX_OPTIONS}
-            onAdd={() => dispatch({ type: 'ADD_OPTION', id: crypto.randomUUID() })}
+            onAdd={() => dispatch({ type: 'ADD_OPTION', id: createOptionId() })}
             onChange={(id, label) => dispatch({ type: 'UPDATE_OPTION', id, label })}
             onRemove={(id) => dispatch({ type: 'REMOVE_OPTION', id })}
           />
