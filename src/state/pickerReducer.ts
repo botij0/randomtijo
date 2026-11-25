@@ -1,8 +1,6 @@
 import { DEFAULT_MODE } from '../domain/modes'
-import { validOptions } from '../domain/options'
+import { MAX_OPTIONS, validOptions } from '../domain/options'
 import type { Mode, Option, PickerState, SpinPhase } from '../domain/types'
-
-export const MAX_OPTIONS = 12
 
 export type PickerAction =
   | { type: 'ADD_OPTION'; id: string }
@@ -11,7 +9,6 @@ export type PickerAction =
   | { type: 'SET_MODE'; mode: Mode }
   | { type: 'START_SPIN'; winnerId: string }
   | { type: 'COMPLETE_SPIN' }
-  | { type: 'HYDRATE'; options: Option[]; mode: Mode }
 
 export function createInitialState(overrides: Partial<PickerState> = {}): PickerState {
   return {
@@ -95,14 +92,6 @@ export function pickerReducer(state: PickerState, action: PickerAction): PickerS
         return state
       }
       return { ...state, phase: 'revealed' }
-    }
-    case 'HYDRATE': {
-      return {
-        options: action.options,
-        mode: action.mode,
-        phase: 'idle',
-        winnerId: null,
-      }
     }
     default: {
       return state

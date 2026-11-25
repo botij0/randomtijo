@@ -1,5 +1,7 @@
 import type { Option } from '../domain/types'
 
+export const MAX_OPTIONS = 12
+
 export function isValidLabel(label: string): boolean {
   return label.trim().length > 0
 }

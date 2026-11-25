@@ -36,6 +36,27 @@ describe('localStore', () => {
     expect(loadPicker(storage)).toEqual(sample)
   })
 
+  it('drops options that repeat an earlier id', () => {
+    const storage = memoryStore({
+      [STORAGE_KEY]: JSON.stringify({
+        options: [
+          { id: 'a', label: 'A' },
+          { id: 'a', label: 'A again' },
+          { id: 'b', label: 'B' },
+        ],
+        mode: 'slots',
+      }),
+    })
+
+    expect(loadPicker(storage)).toEqual({
+      options: [
+        { id: 'a', label: 'A' },
+        { id: 'b', label: 'B' },
+      ],
+      mode: 'slots',
+    })
+  })
+
   it('does not restore winner or history fields', () => {
     const storage = memoryStore()
     savePicker(

@@ -2,12 +2,6 @@ import type { Rng } from './types'
 
 const UINT32_RANGE = 0x1_0000_0000
 
-export function cryptoRng(): number {
-  const buf = new Uint32Array(1)
-  crypto.getRandomValues(buf)
-  return buf[0] / UINT32_RANGE
-}
-
 /**
  * Unbiased index in [0, count).
  * Default path uses crypto.getRandomValues with rejection sampling.

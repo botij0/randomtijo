@@ -1,8 +1,8 @@
 import { useEffect, useReducer, useState } from 'react'
-import { createOptionId, validOptions } from './domain/options'
+import { createOptionId, MAX_OPTIONS, validOptions } from './domain/options'
 import { pickIndex } from './domain/pick'
 import { loadPicker, savePicker } from './persistence/localStore'
-import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from './state/pickerReducer'
+import { canSpin, createInitialState, pickerReducer } from './state/pickerReducer'
 import ModePicker from './ui/ModePicker/ModePicker'
 import OptionEditor from './ui/OptionEditor/OptionEditor'
 import ResultBanner from './ui/ResultBanner/ResultBanner'
@@ -26,16 +26,7 @@ function usePrefersReducedMotion(): boolean {
 }
 
 function initState() {
-  const loaded = loadPicker()
-  if (!loaded) {
-    return createInitialState()
-  }
-  return createInitialState({
-    options: loaded.options,
-    mode: loaded.mode,
-    phase: 'idle',
-    winnerId: null,
-  })
+  return createInitialState(loadPicker() ?? {})
 }
 
 export default function App() {
