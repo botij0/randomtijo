@@ -22,7 +22,7 @@ export function pickIndex(count: number, rng?: Rng): number {
 
   const buf = new Uint32Array(1)
   const limit = UINT32_RANGE - (UINT32_RANGE % count)
-  let value = 0
+  let value: number
   do {
     crypto.getRandomValues(buf)
     value = buf[0]
