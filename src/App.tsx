@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useMemo, useReducer, useState } from 'react'
 import { createOptionId, MAX_OPTIONS, validOptions } from './domain/options'
 import { pickIndex } from './domain/pick'
 import { loadPicker, savePicker } from './persistence/localStore'
@@ -34,7 +34,7 @@ export default function App() {
   const [state, dispatch] = useReducer(pickerReducer, undefined, initState)
   const spinning = state.phase === 'spinning'
   const winner = state.options.find((option) => option.id === state.winnerId) ?? null
-  const playable = validOptions(state.options)
+  const playable = useMemo(() => validOptions(state.options), [state.options])
   const View = MODE_VIEWS[state.mode]
 
   useEffect(() => {
