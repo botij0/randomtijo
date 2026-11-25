@@ -25,4 +25,24 @@ describe('pickIndex', () => {
     expect(spy).not.toHaveBeenCalled()
     spy.mockRestore()
   })
+
+  it('maps a crypto value to its remainder when no rng is injected', () => {
+    const spy = vi.spyOn(crypto, 'getRandomValues').mockImplementation((array) => {
+      ;(array as Uint32Array)[0] = 5
+      return array
+    })
+    expect(pickIndex(3)).toBe(2)
+    spy.mockRestore()
+  })
+
+  it('rejects crypto values above the unbiased limit and draws again', () => {
+    const draws = [0xffff_ffff, 7]
+    const spy = vi.spyOn(crypto, 'getRandomValues').mockImplementation((array) => {
+      ;(array as Uint32Array)[0] = draws.shift()!
+      return array
+    })
+    expect(pickIndex(3)).toBe(1)
+    expect(draws).toEqual([])
+    spy.mockRestore()
+  })
 })

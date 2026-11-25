@@ -17,4 +17,5 @@ node_modules/.tmp/
 
 .engram/
 
-.openspec/
+openspec/
+skills-lock.json

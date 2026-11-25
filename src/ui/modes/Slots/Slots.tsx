@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { Option, SpinPhase } from '../../../domain/types'
 import { SLOT_LOOPS, THEATER_MS } from '../theater'
 import styles from './Slots.module.css'
@@ -10,12 +10,20 @@ type SlotsProps = {
   phase: SpinPhase
 }
 
-
 export default function Slots({ options, winnerId, phase }: SlotsProps) {
-  const positionRef = useRef(0)
   const [offset, setOffset] = useState(0)
   const winnerIndex = Math.max(0, options.findIndex((option) => option.id === winnerId))
   const spinning = phase === 'spinning' && winnerId !== null
+  const spinToken = spinning ? winnerId : ''
+  const [activeToken, setActiveToken] = useState('')
+
+  if (spinToken !== activeToken) {
+    setActiveToken(spinToken)
+    if (spinToken && options.length > 0) {
+      setOffset(reelOffset(offset, winnerIndex, options.length))
+    }
+  }
+
   const items = useMemo(() => {
     const copies: Option[] = []
     for (let loop = 0; loop < SLOT_LOOPS + 2; loop += 1) {
@@ -24,23 +32,10 @@ export default function Slots({ options, winnerId, phase }: SlotsProps) {
     return copies
   }, [options])
 
-  useEffect(() => {
-    if (!spinning || options.length === 0) {
-      return
-    }
-    const next = reelOffset(positionRef.current, winnerIndex, options.length)
-    positionRef.current = next
-    setOffset(next)
-  }, [spinning, winnerId, options.length, winnerIndex])
-
-  useEffect(() => {
-    if (phase !== 'revealed' || !winnerId || options.length === 0) {
-      return
-    }
-    const snapped = winnerIndex * SLOT_ITEM_HEIGHT
-    positionRef.current = snapped
+  const snapped = winnerIndex * SLOT_ITEM_HEIGHT
+  if (phase === 'revealed' && winnerId && options.length > 0 && offset !== snapped) {
     setOffset(snapped)
-  }, [phase, winnerId, options.length, winnerIndex])
+  }
 
   const translate = spinning || phase === 'revealed' ? offset : 0
   const revealed = phase === 'revealed'

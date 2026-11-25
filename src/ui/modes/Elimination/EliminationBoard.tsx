@@ -10,27 +10,19 @@ type EliminationBoardProps = {
   phase: SpinPhase
 }
 
-
 export default function EliminationBoard({ options, winnerId, phase }: EliminationBoardProps) {
   const spinning = phase === 'spinning' && winnerId !== null
   const raceToken = spinning ? winnerId : ''
-  const playIndexRef = useRef(spinning ? 1 : 0)
-  const eliminatedRef = useRef<Set<string>>(new Set())
+  const playIndexRef = useRef(0)
   const [activeToken, setActiveToken] = useState(raceToken)
   const [eliminated, setEliminated] = useState<Set<string>>(() => new Set())
   const [hotId, setHotId] = useState<string | null>(null)
 
   if (raceToken !== activeToken) {
-    if (raceToken) {
-      playIndexRef.current += 1
-    }
     setActiveToken(raceToken)
     setEliminated(new Set())
     setHotId(null)
   }
-
-  eliminatedRef.current = eliminated
-  const optionIds = options.map((option) => option.id)
 
   const revealedOut =
     phase === 'revealed' && winnerId
@@ -41,21 +33,19 @@ export default function EliminationBoard({ options, winnerId, phase }: Eliminati
     if (!spinning || !winnerId) {
       return
     }
+    playIndexRef.current += 1
+    const optionIds = options.map((option) => option.id)
     const knockout = eliminationOrder(optionIds, winnerId, playIndexRef.current)
+    const out = new Set<string>()
     const timers = knockout.map((loserId, rank) =>
       window.setTimeout(() => {
-        setEliminated((current) => {
-          const next = new Set(current)
-          next.add(loserId)
-          return next
-        })
+        out.add(loserId)
+        setEliminated(new Set(out))
       }, THEATER_RESET_MS + eliminationAtMs(rank, knockout.length)),
     )
     let tick = playIndexRef.current
     const scan = window.setInterval(() => {
-      const remaining = optionIds.filter(
-        (id) => id === winnerId || !eliminatedRef.current.has(id),
-      )
+      const remaining = optionIds.filter((id) => id === winnerId || !out.has(id))
       if (remaining.length === 0) {
         return
       }
@@ -68,7 +58,7 @@ export default function EliminationBoard({ options, winnerId, phase }: Eliminati
         window.clearTimeout(timer)
       }
     }
-  }, [spinning, winnerId, optionIds.join('|')])
+  }, [spinning, winnerId, options])
 
   return (
     <div

@@ -115,6 +115,20 @@ describe('App', () => {
     expect(screen.getByTestId('slots')).toHaveAttribute('data-winner-id', '')
   })
 
+  it('adds an option outside a secure context, where crypto.randomUUID is missing', async () => {
+    Object.defineProperty(crypto, 'randomUUID', { value: undefined, configurable: true })
+    try {
+      const user = userEvent.setup()
+      render(<App />)
+
+      await user.click(screen.getByRole('button', { name: 'Add option' }))
+
+      expect(screen.getByLabelText('Option 4 label')).toHaveValue('')
+    } finally {
+      delete (crypto as { randomUUID?: unknown }).randomUUID
+    }
+  })
+
   it('stays usable when storage throws', async () => {
     const user = userEvent.setup()
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {

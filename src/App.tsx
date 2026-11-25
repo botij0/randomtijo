@@ -1,8 +1,8 @@
-import { useEffect, useReducer, useState } from 'react'
-import { validOptions } from './domain/options'
+import { useEffect, useMemo, useReducer, useState } from 'react'
+import { createOptionId, MAX_OPTIONS, validOptions } from './domain/options'
 import { pickIndex } from './domain/pick'
 import { loadPicker, savePicker } from './persistence/localStore'
-import { canSpin, createInitialState, MAX_OPTIONS, pickerReducer } from './state/pickerReducer'
+import { canSpin, createInitialState, pickerReducer } from './state/pickerReducer'
 import ModePicker from './ui/ModePicker/ModePicker'
 import OptionEditor from './ui/OptionEditor/OptionEditor'
 import ResultBanner from './ui/ResultBanner/ResultBanner'
@@ -26,16 +26,7 @@ function usePrefersReducedMotion(): boolean {
 }
 
 function initState() {
-  const loaded = loadPicker()
-  if (!loaded) {
-    return createInitialState()
-  }
-  return createInitialState({
-    options: loaded.options,
-    mode: loaded.mode,
-    phase: 'idle',
-    winnerId: null,
-  })
+  return createInitialState(loadPicker() ?? {})
 }
 
 export default function App() {
@@ -43,7 +34,7 @@ export default function App() {
   const [state, dispatch] = useReducer(pickerReducer, undefined, initState)
   const spinning = state.phase === 'spinning'
   const winner = state.options.find((option) => option.id === state.winnerId) ?? null
-  const playable = validOptions(state.options)
+  const playable = useMemo(() => validOptions(state.options), [state.options])
   const View = MODE_VIEWS[state.mode]
 
   useEffect(() => {
@@ -92,7 +83,7 @@ export default function App() {
             options={state.options}
             disabled={spinning}
             canAdd={state.options.length < MAX_OPTIONS}
-            onAdd={() => dispatch({ type: 'ADD_OPTION', id: crypto.randomUUID() })}
+            onAdd={() => dispatch({ type: 'ADD_OPTION', id: createOptionId() })}
             onChange={(id, label) => dispatch({ type: 'UPDATE_OPTION', id, label })}
             onRemove={(id) => dispatch({ type: 'REMOVE_OPTION', id })}
           />

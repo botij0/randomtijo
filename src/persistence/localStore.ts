@@ -1,4 +1,5 @@
 import { isMode } from '../domain/modes'
+import { MAX_OPTIONS } from '../domain/options'
 import type { Mode, Option } from '../domain/types'
 
 export const STORAGE_KEY = 'randomtijo.picker.v1'
@@ -11,10 +12,11 @@ export type PersistedPicker = {
 export type StorageLike = Pick<Storage, 'getItem' | 'setItem'>
 
 function parseOptions(value: unknown): Option[] | null {
-  if (!Array.isArray(value) || value.length < 1 || value.length > 12) {
+  if (!Array.isArray(value) || value.length < 1 || value.length > MAX_OPTIONS) {
     return null
   }
   const options: Option[] = []
+  const seen = new Set<string>()
   for (const item of value) {
     if (!item || typeof item !== 'object') {
       return null
@@ -23,6 +25,10 @@ function parseOptions(value: unknown): Option[] | null {
     if (typeof record.id !== 'string' || typeof record.label !== 'string') {
       return null
     }
+    if (seen.has(record.id)) {
+      continue
+    }
+    seen.add(record.id)
     options.push({ id: record.id, label: record.label })
   }
   return options

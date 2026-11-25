@@ -20,7 +20,7 @@ Runs in the browser with no accounts or server. Options and last mode stay in lo
 docker compose up --build -d
 ```
 
-Open [http://localhost:8080](http://localhost:8080). Stop with `docker compose down`.
+Open [http://localhost:9999](http://localhost:9999). Stop with `docker compose down`.
 
 Without Compose:
 
