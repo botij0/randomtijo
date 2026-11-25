@@ -53,6 +53,37 @@ describe('pickerReducer', () => {
     expect(pickerReducer(spinning, { type: 'REMOVE_OPTION', id: 'c' }).options).toHaveLength(3)
   })
 
+  it('clears the revealed winner when options change', () => {
+    const revealed = createInitialState({
+      options: [option('a', 'Alpha'), option('b', 'Beta'), option('c', 'Gamma')],
+      phase: 'revealed',
+      winnerId: 'b',
+    })
+
+    const edits = [
+      pickerReducer(revealed, { type: 'ADD_OPTION', id: 'd' }),
+      pickerReducer(revealed, { type: 'UPDATE_OPTION', id: 'b', label: 'Bravo' }),
+      pickerReducer(revealed, { type: 'REMOVE_OPTION', id: 'c' }),
+    ]
+
+    expect(edits.map(({ phase, winnerId }) => ({ phase, winnerId }))).toEqual([
+      { phase: 'idle', winnerId: null },
+      { phase: 'idle', winnerId: null },
+      { phase: 'idle', winnerId: null },
+    ])
+  })
+
+  it('keeps the revealed winner when only the mode changes', () => {
+    const revealed = createInitialState({
+      options: [option('a', 'Alpha'), option('b', 'Beta')],
+      phase: 'revealed',
+      winnerId: 'b',
+    })
+
+    const next = pickerReducer(revealed, { type: 'SET_MODE', mode: 'slots' })
+    expect({ phase: next.phase, winnerId: next.winnerId }).toEqual({ phase: 'revealed', winnerId: 'b' })
+  })
+
   it('caps the set at 12 options', () => {
     const twelve = Array.from({ length: 12 }, (_, index) => option(`o-${index}`, `Item ${index}`))
     const state = createInitialState({ options: twelve, phase: 'idle' })
